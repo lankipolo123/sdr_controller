@@ -26,18 +26,22 @@ class DeviceController(QObject):
         self.conn.connected_changed.connect(self._on_connected_changed)
         self._pending_timer: QTimer | None = None
         self._pending_label = None
+        self._pending_state_update: dict | None = None
 
     # ---- outgoing commands ----
 
     def turn_output_on(self):
-        self._send(commands.output_on(self.state.data.address), "Output ON")
+        self._send(commands.output_on(self.state.data.address), "Output ON",
+                   {"output_on": True})
 
     def turn_output_off(self):
-        self._send(commands.output_off(self.state.data.address), "Output OFF")
+        self._send(commands.output_off(self.state.data.address), "Output OFF",
+                   {"output_on": False})
 
     def apply_signal_settings(self, mode: int, freq_mhz: int, bandwidth_mhz: int, power_db: int):
         frame = commands.set_signal(self.state.data.address, mode, freq_mhz, bandwidth_mhz, power_db)
-        self._send(frame, f"Signal: mode={mode} f={freq_mhz}MHz bw={bandwidth_mhz}MHz p={power_db}dB")
+        self._send(frame, f"Signal: mode={mode} f={freq_mhz}MHz bw={bandwidth_mhz}MHz p={power_db}dB",
+                   {"mode": mode, "frequency_mhz": freq_mhz, "bandwidth_mhz": bandwidth_mhz, "power_db": power_db})
 
     def read_device(self):
         self._send(commands.query_status(self.state.data.address), "Status query")
@@ -46,9 +50,10 @@ class DeviceController(QObject):
         self._send(commands.query_address(), "Query address")
 
     def set_address(self, new_addr: int):
-        self._send(commands.set_address(new_addr), f"Set address to {new_addr}")
+        self._send(commands.set_address(new_addr), f"Set address to {new_addr}",
+                   {"address": new_addr})
 
-    def _send(self, frame: bytes, label: str):
+    def _send(self, frame: bytes, label: str, state_update: dict | None = None):
         self.state.update(last_command=label)
         if self.logger:
             self.logger.info(f"TX ({label}): {frame.hex(' ').upper()}")
@@ -59,6 +64,7 @@ class DeviceController(QObject):
 
         self._cancel_pending_timeout()
         self._pending_label = label
+        self._pending_state_update = state_update
         self._pending_timer = QTimer()
         self._pending_timer.setSingleShot(True)
         self._pending_timer.timeout.connect(self._on_response_timeout)
@@ -69,6 +75,7 @@ class DeviceController(QObject):
             self._pending_timer.stop()
             self._pending_timer = None
             self._pending_label = None
+            self._pending_state_update = None
 
     def _on_response_timeout(self):
         msg = (
@@ -87,11 +94,16 @@ class DeviceController(QObject):
         self.state.update(connected=connected)
 
     def _on_frame(self, frame: ParsedFrame):
+        pending_update = self._pending_state_update
         self._cancel_pending_timeout()
         if self.logger:
             self.logger.info(f"RX: {frame.raw.hex(' ').upper()} -> {frame.describe()}")
 
-        if frame.type == c.TYPE_STATUS_QUERY and len(frame.buf) >= 6:
+        if frame.type in (c.TYPE_OUTPUT_SWITCH, c.TYPE_SIGNAL_CONTROL, c.TYPE_ADDR_SET) \
+                and len(frame.buf) == 1:
+            if frame.buf[0] == c.RESP_SUCCESS and pending_update:
+                self.state.update(**pending_update)
+        elif frame.type == c.TYPE_STATUS_QUERY and len(frame.buf) >= 6:
             output = frame.buf[0]
             mode = frame.buf[1]
             freq = struct.unpack(">H", frame.buf[2:4])[0]
