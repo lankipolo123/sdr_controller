@@ -7,3 +7,4 @@ from .confirm_dialog import ConfirmDialog
 from .toggle_switch import ToggleSwitch
 from .section_card import SectionCard
 from .activity_chart import ActivityChart
+from .hex_line_display import HexLineDisplay
