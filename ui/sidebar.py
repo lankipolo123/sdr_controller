@@ -5,7 +5,7 @@ from PySide6.QtGui import QIcon
 
 from .theme_colors import NAVY, ACCENT_BLUE, TEXT_LIGHT, BORDER_SUBTLE
 
-PAGES = ["Dashboard", "Device Control", "Communication", "Settings"]
+PAGES = ["Dashboard", "Device Control", "Communication"]
 
 _ICON_DIR = os.path.join(os.path.dirname(__file__), "..", "assets", "icons", "pages")
 _ICON_DIR_DARK = os.path.join(os.path.dirname(__file__), "..", "assets", "icons", "pages_dark")
@@ -13,7 +13,6 @@ _ICON_FILES = {
     "Dashboard": "dashboard.png",
     "Device Control": "device_control.png",
     "Communication": "communication.png",
-    "Settings": "settings.png",
 }
 
 
