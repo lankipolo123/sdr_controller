@@ -42,6 +42,12 @@ class DeviceController(QObject):
     def read_device(self):
         self._send(commands.query_status(self.state.data.address), "Status query")
 
+    def query_address(self):
+        self._send(commands.query_address(), "Query address")
+
+    def set_address(self, new_addr: int):
+        self._send(commands.set_address(new_addr), f"Set address to {new_addr}")
+
     def _send(self, frame: bytes, label: str):
         self.state.update(last_command=label)
         if self.logger:
@@ -98,3 +104,5 @@ class DeviceController(QObject):
                 bandwidth_mhz=c.BANDWIDTH_CODES_REV.get(bw_code),
                 power_db=c.POWER_CODES_REV.get(pw_code),
             )
+        elif frame.type == c.TYPE_ADDR_QUERY and len(frame.buf) == 1:
+            self.state.update(address=frame.buf[0])

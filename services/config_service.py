@@ -4,6 +4,7 @@ import os
 DEFAULT_CONFIG = {
     "com_port": "",
     "baud_rate": 115200,
+    "parity": "N",
     "module_address": 0,
     "auto_connect": False,
     "log_folder": "logs",

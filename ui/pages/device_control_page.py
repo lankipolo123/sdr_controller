@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
 
 from ui.base_page import BasePage
 from ui.widgets import FrequencyWidget, ToggleSwitch
+from ui.widgets.confirm_dialog import ConfirmDialog
 from protocol import constants as c
 from protocol.packet_builder import ProtocolError
 
@@ -36,8 +37,9 @@ class DeviceControlPage(BasePage):
         self.rb_white = QRadioButton("White Noise")
         self.rb_sweep = QRadioButton("Linear Sweep")
         self.rb_comb = QRadioButton("Comb Spectrum")
+        self.rb_single = QRadioButton("Single (unconfirmed)")
         self.rb_white.setChecked(True)
-        for i, rb in enumerate([self.rb_white, self.rb_sweep, self.rb_comb]):
+        for i, rb in enumerate([self.rb_white, self.rb_sweep, self.rb_comb, self.rb_single]):
             self.mode_group.addButton(rb, i)
             mode_row.addWidget(rb)
         mode_row.addStretch()
@@ -50,7 +52,8 @@ class DeviceControlPage(BasePage):
         bw_row.addWidget(QLabel("Bandwidth:"))
         self.bw_combo = QComboBox()
         for mhz in c.BANDWIDTH_CODES.keys():
-            self.bw_combo.addItem(f"{mhz} MHz", mhz)
+            suffix = " (unconfirmed)" if mhz in c.BANDWIDTH_UNCONFIRMED else ""
+            self.bw_combo.addItem(f"{mhz} MHz{suffix}", mhz)
         self.bw_combo.setCurrentIndex(3)  # 100 MHz default
         bw_row.addWidget(self.bw_combo)
         bw_row.addStretch()
@@ -83,14 +86,36 @@ class DeviceControlPage(BasePage):
             mode = c.MODE_WHITE_NOISE
         elif self.rb_sweep.isChecked():
             mode = c.MODE_LINEAR_SWEEP
-        else:
+        elif self.rb_comb.isChecked():
             mode = c.MODE_COMB_SPECTRUM
+        else:
+            mode = c.MODE_SINGLE
+
+        bandwidth_mhz = self.bw_combo.currentData()
+        unconfirmed = []
+        if mode in c.MODES_UNCONFIRMED:
+            unconfirmed.append("modulation mode")
+        if bandwidth_mhz in c.BANDWIDTH_UNCONFIRMED:
+            unconfirmed.append("bandwidth")
+
+        if unconfirmed:
+            proceed = ConfirmDialog.ask(
+                self,
+                "Unconfirmed value",
+                f"The selected {' and '.join(unconfirmed)} uses a guessed "
+                "protocol byte value that hasn't been verified against real "
+                "hardware. Send anyway?",
+                confirm_text="Send anyway",
+                danger=True,
+            )
+            if not proceed:
+                return
 
         try:
             self.app.device.apply_signal_settings(
                 mode,
                 self.freq_widget.value(),
-                self.bw_combo.currentData(),
+                bandwidth_mhz,
                 self.power_combo.currentData(),
             )
         except ProtocolError as e:

@@ -28,12 +28,21 @@ OUTPUT_ON = 0x01
 MODE_WHITE_NOISE = 0x00
 MODE_LINEAR_SWEEP = 0x01
 MODE_COMB_SPECTRUM = 0x02
+# UNCONFIRMED: vendor's real V1.1 software has a 4th mode, "SINGLE", that
+# we don't have byte-value proof for. 0x03 is a sequential guess (see
+# PLANNING_v1.1_COMPARISON.md section 2). Do not trust this against real
+# hardware until verified.
+MODE_SINGLE = 0x03
 
 MODE_NAMES = {
     MODE_WHITE_NOISE: "White Noise",
     MODE_LINEAR_SWEEP: "Linear Sweep",
     MODE_COMB_SPECTRUM: "Comb Spectrum",
+    MODE_SINGLE: "Single",
 }
+
+# Modes whose byte value is a guess, not confirmed against real hardware.
+MODES_UNCONFIRMED = frozenset({MODE_SINGLE})
 
 # ---- Bandwidth codes (MHz -> code) ----
 BANDWIDTH_CODES = {
@@ -44,8 +53,16 @@ BANDWIDTH_CODES = {
     150: 0x04,
     200: 0x05,
     250: 0x06,
+    # UNCONFIRMED: real device has a 300MHz option; 0x07 is a sequential
+    # guess following the confirmed 0x00-0x06 pattern (see
+    # PLANNING_v1.1_COMPARISON.md section 3). Not verified against real
+    # hardware.
+    300: 0x07,
 }
 BANDWIDTH_CODES_REV = {v: k for k, v in BANDWIDTH_CODES.items()}
+
+# Bandwidth values whose byte code is a guess, not confirmed against real hardware.
+BANDWIDTH_UNCONFIRMED = frozenset({300})
 
 # ---- Power codes (dB -> code) ----
 POWER_CODES = {
