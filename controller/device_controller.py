@@ -80,7 +80,8 @@ class DeviceController(QObject):
     def _on_response_timeout(self):
         msg = (
             f"No response within {RESPONSE_TIMEOUT_MS}ms for: {self._pending_label} "
-            f"(check wiring, module power, and module address — see wiring reference)"
+            f"(could be wiring, module power, module address, connection settings, "
+            f"or a software issue on either side)"
         )
         if self.logger:
             self.logger.warning(msg)

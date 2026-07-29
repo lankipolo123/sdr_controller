@@ -1,7 +1,7 @@
-from PySide6.QtWidgets import QGridLayout, QLabel, QGroupBox, QVBoxLayout
+from PySide6.QtWidgets import QGridLayout, QLabel, QGroupBox, QVBoxLayout, QHBoxLayout
 
 from ui.base_page import BasePage
-from ui.widgets import ConnectionWidget
+from ui.widgets import ConnectionWidget, TerminalWidget
 from protocol import constants as c
 
 
@@ -41,7 +41,25 @@ class DashboardPage(BasePage):
 
         self.last_command_label = QLabel("Last Command: —")
         layout.addWidget(self.last_command_label)
-        layout.addStretch()
+
+        boxes_row = QHBoxLayout()
+
+        tx_box = QGroupBox("Data Sending")
+        tx_layout = QVBoxLayout(tx_box)
+        self.tx_terminal = TerminalWidget()
+        tx_layout.addWidget(self.tx_terminal)
+        boxes_row.addWidget(tx_box)
+
+        rx_box = QGroupBox("Data Receiving")
+        rx_layout = QVBoxLayout(rx_box)
+        self.rx_terminal = TerminalWidget()
+        rx_layout.addWidget(self.rx_terminal)
+        boxes_row.addWidget(rx_box)
+
+        layout.addLayout(boxes_row)
+
+        self.app.connection.raw_tx.connect(self.tx_terminal.log_tx)
+        self.app.connection.raw_rx.connect(self.rx_terminal.log_rx)
 
         self._refresh()
 
