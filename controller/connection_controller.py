@@ -21,9 +21,9 @@ class ConnectionController(QObject):
     def list_ports():
         return list_com_ports()
 
-    def connect(self, port_name: str, baud: int = 115200, parity: str = "N") -> bool:
+    def connect(self, port_name: str, baud: int = 115200, parity: str = "N", data_bits: int = 8) -> bool:
         try:
-            self.manager.open(port_name, baud, parity)
+            self.manager.open(port_name, baud, parity, data_bits)
         except Exception as e:
             self.error.emit(f"Failed to open {port_name}: {e}")
             return False

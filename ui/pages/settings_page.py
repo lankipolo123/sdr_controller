@@ -3,6 +3,9 @@ from PySide6.QtWidgets import (
     QLineEdit, QPushButton, QMessageBox, QGroupBox, QVBoxLayout, QLabel
 )
 
+from serial_io import list_com_ports
+from ui.base_page import BasePage
+
 PARITY_OPTIONS = [
     ("None", "N"),
     ("Odd", "O"),
@@ -11,8 +14,9 @@ PARITY_OPTIONS = [
     ("Space", "S"),
 ]
 
-from serial_io import list_com_ports
-from ui.base_page import BasePage
+BAUD_OPTIONS = [9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600, 2000000]
+
+DATA_BITS_OPTIONS = [5, 6, 7, 8]
 
 
 class SettingsPage(BasePage):
@@ -33,10 +37,21 @@ class SettingsPage(BasePage):
             self.port_combo.setCurrentText(config.get("com_port"))
         form.addRow("COM Port:", self.port_combo)
 
-        self.baud_spin = QSpinBox()
-        self.baud_spin.setRange(1200, 2000000)
-        self.baud_spin.setValue(config.get("baud_rate", 115200))
-        form.addRow("Baud Rate:", self.baud_spin)
+        self.baud_combo = QComboBox()
+        for baud in BAUD_OPTIONS:
+            self.baud_combo.addItem(str(baud), baud)
+        saved_baud = config.get("baud_rate", 115200)
+        idx = self.baud_combo.findData(saved_baud)
+        self.baud_combo.setCurrentIndex(idx if idx >= 0 else self.baud_combo.findData(115200))
+        form.addRow("Baud Rate:", self.baud_combo)
+
+        self.data_bits_combo = QComboBox()
+        for bits in DATA_BITS_OPTIONS:
+            self.data_bits_combo.addItem(str(bits), bits)
+        saved_data_bits = config.get("data_bits", 8)
+        idx = self.data_bits_combo.findData(saved_data_bits)
+        self.data_bits_combo.setCurrentIndex(idx if idx >= 0 else self.data_bits_combo.findData(8))
+        form.addRow("Data Bits:", self.data_bits_combo)
 
         self.parity_combo = QComboBox()
         for label, code in PARITY_OPTIONS:
@@ -47,9 +62,11 @@ class SettingsPage(BasePage):
         form.addRow("Parity:", self.parity_combo)
 
         unconfirmed_note = QLabel(
-            "Only None parity / 115200 baud has been confirmed against real "
-            "hardware. Other options are exposed here but untested — see "
-            "PLANNING_v1.1_COMPARISON.md section 4."
+            "Baud rate, data bits, and parity options here match the real "
+            "vendor V1.1 software's dropdowns exactly. Only None parity / "
+            "115200 baud / 8 data bits has actually been used against real "
+            "hardware so far — other combinations are UI-ready but untested "
+            "on the device itself. See PLANNING_v1.1_COMPARISON.md section 4."
         )
         unconfirmed_note.setWordWrap(True)
         unconfirmed_note.setStyleSheet(
@@ -89,7 +106,8 @@ class SettingsPage(BasePage):
     def _on_save(self):
         config = self.app.config
         config.set("com_port", self.port_combo.currentText())
-        config.set("baud_rate", self.baud_spin.value())
+        config.set("baud_rate", self.baud_combo.currentData())
+        config.set("data_bits", self.data_bits_combo.currentData())
         config.set("parity", self.parity_combo.currentData())
         config.set("module_address", self.address_spin.value())
         config.set("auto_connect", self.auto_connect_check.isChecked())
