@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QGridLayout, QLabel, QGroupBox, QVBoxLayout, QHBoxLayout
+from PySide6.QtWidgets import QGridLayout, QLabel, QGroupBox, QVBoxLayout, QHBoxLayout, QSizePolicy
 
 from ui.base_page import BasePage
 from ui.widgets import ConnectionWidget, HexLineDisplay
@@ -45,12 +45,14 @@ class DashboardPage(BasePage):
         boxes_row = QHBoxLayout()
 
         tx_box = QGroupBox("Data Sending")
+        tx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         tx_layout = QVBoxLayout(tx_box)
         self.tx_display = HexLineDisplay()
         tx_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
         rx_box = QGroupBox("Data Receiving")
+        rx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         rx_layout = QVBoxLayout(rx_box)
         self.rx_display = HexLineDisplay()
         rx_layout.addWidget(self.rx_display)
