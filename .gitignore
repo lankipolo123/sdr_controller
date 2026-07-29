@@ -8,5 +8,4 @@ env/
 build/
 dist/
 logs/*.log
-*.spec
 .DS_Store
