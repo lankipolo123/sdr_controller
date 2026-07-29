@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QWidget, QHBoxLayout, QStackedWidget
 
 from .sidebar import Sidebar, PAGES
-from .pages import DashboardPage, DeviceControlPage, CommunicationPage, SettingsPage
+from .pages import DashboardPage, DeviceControlPage, CommunicationPage
 
 
 class MainWindow(QMainWindow):
@@ -23,7 +23,6 @@ class MainWindow(QMainWindow):
             "Dashboard": DashboardPage(self.app),
             "Device Control": DeviceControlPage(self.app),
             "Communication": CommunicationPage(self.app),
-            "Settings": SettingsPage(self.app),
         }
         for name in PAGES:
             self.stack.addWidget(self.pages[name])
