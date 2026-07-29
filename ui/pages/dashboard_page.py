@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QGridLayout, QLabel, QGroupBox, QVBoxLayout, QHBoxLayout
 
 from ui.base_page import BasePage
-from ui.widgets import ConnectionWidget, TerminalWidget
+from ui.widgets import ConnectionWidget, HexLineDisplay
 from protocol import constants as c
 
 
@@ -46,20 +46,21 @@ class DashboardPage(BasePage):
 
         tx_box = QGroupBox("Data Sending")
         tx_layout = QVBoxLayout(tx_box)
-        self.tx_terminal = TerminalWidget()
-        tx_layout.addWidget(self.tx_terminal)
+        self.tx_display = HexLineDisplay()
+        tx_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
         rx_box = QGroupBox("Data Receiving")
         rx_layout = QVBoxLayout(rx_box)
-        self.rx_terminal = TerminalWidget()
-        rx_layout.addWidget(self.rx_terminal)
+        self.rx_display = HexLineDisplay()
+        rx_layout.addWidget(self.rx_display)
         boxes_row.addWidget(rx_box)
 
         layout.addLayout(boxes_row)
+        layout.addStretch()
 
-        self.app.connection.raw_tx.connect(self.tx_terminal.log_tx)
-        self.app.connection.raw_rx.connect(self.rx_terminal.log_rx)
+        self.app.connection.raw_tx.connect(self.tx_display.show_bytes)
+        self.app.connection.raw_rx.connect(self.rx_display.show_bytes)
 
         self._refresh()
 
