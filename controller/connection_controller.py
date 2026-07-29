@@ -7,6 +7,7 @@ class ConnectionController(QObject):
     connected_changed = Signal(bool)
     frame_received = Signal(object)
     raw_rx = Signal(bytes)
+    raw_tx = Signal(bytes)
     error = Signal(str)
 
     def __init__(self):
@@ -45,6 +46,7 @@ class ConnectionController(QObject):
             return False
         try:
             self.manager.write(data)
+            self.raw_tx.emit(data)
             return True
         except Exception as e:
             self.error.emit(f"Write failed: {e}")
