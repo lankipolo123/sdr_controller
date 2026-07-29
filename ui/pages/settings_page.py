@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QFormLayout, QComboBox, QSpinBox, QCheckBox, QHBoxLayout,
-    QLineEdit, QPushButton, QMessageBox, QGroupBox, QVBoxLayout, QLabel
+    QLineEdit, QPushButton, QMessageBox, QGroupBox, QVBoxLayout
 )
 
 from serial_io import list_com_ports
@@ -61,18 +61,6 @@ class SettingsPage(BasePage):
         self.parity_combo.setCurrentIndex(idx if idx >= 0 else 0)
         form.addRow("Parity:", self.parity_combo)
 
-        unconfirmed_note = QLabel(
-            "Baud rate, data bits, and parity options here match the real "
-            "vendor V1.1 software's dropdowns exactly. Only None parity / "
-            "115200 baud / 8 data bits has actually been used against real "
-            "hardware so far — other combinations are UI-ready but untested "
-            "on the device itself. See PLANNING_v1.1_COMPARISON.md section 4."
-        )
-        unconfirmed_note.setWordWrap(True)
-        unconfirmed_note.setStyleSheet(
-            "color: #92400e; background: #fef3c7; border: 1px solid #f59e0b; "
-            "border-radius: 6px; padding: 8px; font-weight: 600;"
-        )
         address_row = QHBoxLayout()
         self.address_spin = QSpinBox()
         self.address_spin.setRange(0, 199)
@@ -94,7 +82,6 @@ class SettingsPage(BasePage):
         form.addRow("Log Folder:", self.log_folder_edit)
 
         box_layout.addLayout(form)
-        box_layout.addWidget(unconfirmed_note)
 
         save_btn = QPushButton("Save Configuration")
         save_btn.clicked.connect(self._on_save)
