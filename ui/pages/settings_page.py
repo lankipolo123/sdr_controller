@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (
-    QFormLayout, QComboBox, QSpinBox, QCheckBox,
+    QFormLayout, QComboBox, QSpinBox, QCheckBox, QHBoxLayout,
     QLineEdit, QPushButton, QMessageBox, QGroupBox, QVBoxLayout
 )
 
@@ -11,6 +11,7 @@ class SettingsPage(BasePage):
     def __init__(self, app_controller, parent=None):
         super().__init__("Settings", "settings", app_controller, parent)
         config = self.app.config
+        self.app.device_state.changed.connect(self._on_state_changed)
 
         layout = self.content_layout
 
@@ -29,10 +30,18 @@ class SettingsPage(BasePage):
         self.baud_spin.setValue(config.get("baud_rate", 115200))
         form.addRow("Baud Rate:", self.baud_spin)
 
+        address_row = QHBoxLayout()
         self.address_spin = QSpinBox()
         self.address_spin.setRange(0, 199)
         self.address_spin.setValue(config.get("module_address", 0))
-        form.addRow("Module Address:", self.address_spin)
+        address_row.addWidget(self.address_spin)
+        self.query_addr_btn = QPushButton("Query")
+        self.query_addr_btn.clicked.connect(self.app.device.query_address)
+        address_row.addWidget(self.query_addr_btn)
+        self.set_addr_btn = QPushButton("Set")
+        self.set_addr_btn.clicked.connect(self._on_set_address)
+        address_row.addWidget(self.set_addr_btn)
+        form.addRow("Module Address:", address_row)
 
         self.auto_connect_check = QCheckBox()
         self.auto_connect_check.setChecked(config.get("auto_connect", False))
@@ -61,3 +70,10 @@ class SettingsPage(BasePage):
 
         self.app.device_state.update(address=self.address_spin.value())
         QMessageBox.information(self, "Settings", "Configuration saved.")
+
+    def _on_set_address(self):
+        self.app.device.set_address(self.address_spin.value())
+
+    def _on_state_changed(self):
+        if not self.address_spin.hasFocus():
+            self.address_spin.setValue(self.app.device_state.data.address)
