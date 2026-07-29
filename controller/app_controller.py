@@ -30,8 +30,9 @@ class AppController:
             self.logger.warning(f"Auto-connect: saved port {port} not found among {available}; skipping.")
             return
         baud = self.config.get("baud_rate", 115200)
-        self.logger.info(f"Auto-connecting to {port} at {baud} baud.")
-        self.connection.connect(port, baud)
+        parity = self.config.get("parity", "N")
+        self.logger.info(f"Auto-connecting to {port} at {baud} baud, parity={parity}.")
+        self.connection.connect(port, baud, parity)
 
     def shutdown(self):
         if self.connection.is_connected():

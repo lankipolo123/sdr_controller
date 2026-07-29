@@ -1,7 +1,15 @@
 from PySide6.QtWidgets import (
     QFormLayout, QComboBox, QSpinBox, QCheckBox, QHBoxLayout,
-    QLineEdit, QPushButton, QMessageBox, QGroupBox, QVBoxLayout
+    QLineEdit, QPushButton, QMessageBox, QGroupBox, QVBoxLayout, QLabel
 )
+
+PARITY_OPTIONS = [
+    ("None", "N"),
+    ("Odd", "O"),
+    ("Even", "E"),
+    ("Mark", "M"),
+    ("Space", "S"),
+]
 
 from serial_io import list_com_ports
 from ui.base_page import BasePage
@@ -26,10 +34,28 @@ class SettingsPage(BasePage):
         form.addRow("COM Port:", self.port_combo)
 
         self.baud_spin = QSpinBox()
-        self.baud_spin.setRange(1200, 921600)
+        self.baud_spin.setRange(1200, 2000000)
         self.baud_spin.setValue(config.get("baud_rate", 115200))
         form.addRow("Baud Rate:", self.baud_spin)
 
+        self.parity_combo = QComboBox()
+        for label, code in PARITY_OPTIONS:
+            self.parity_combo.addItem(label, code)
+        saved_parity = config.get("parity", "N")
+        idx = self.parity_combo.findData(saved_parity)
+        self.parity_combo.setCurrentIndex(idx if idx >= 0 else 0)
+        form.addRow("Parity:", self.parity_combo)
+
+        unconfirmed_note = QLabel(
+            "Only None parity / 115200 baud has been confirmed against real "
+            "hardware. Other options are exposed here but untested — see "
+            "PLANNING_v1.1_COMPARISON.md section 4."
+        )
+        unconfirmed_note.setWordWrap(True)
+        unconfirmed_note.setStyleSheet(
+            "color: #92400e; background: #fef3c7; border: 1px solid #f59e0b; "
+            "border-radius: 6px; padding: 8px; font-weight: 600;"
+        )
         address_row = QHBoxLayout()
         self.address_spin = QSpinBox()
         self.address_spin.setRange(0, 199)
@@ -51,6 +77,7 @@ class SettingsPage(BasePage):
         form.addRow("Log Folder:", self.log_folder_edit)
 
         box_layout.addLayout(form)
+        box_layout.addWidget(unconfirmed_note)
 
         save_btn = QPushButton("Save Configuration")
         save_btn.clicked.connect(self._on_save)
@@ -63,6 +90,7 @@ class SettingsPage(BasePage):
         config = self.app.config
         config.set("com_port", self.port_combo.currentText())
         config.set("baud_rate", self.baud_spin.value())
+        config.set("parity", self.parity_combo.currentData())
         config.set("module_address", self.address_spin.value())
         config.set("auto_connect", self.auto_connect_check.isChecked())
         config.set("log_folder", self.log_folder_edit.text())

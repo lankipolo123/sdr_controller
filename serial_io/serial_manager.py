@@ -9,6 +9,18 @@ import serial.tools.list_ports
 
 BAUD_RATE = 115200
 
+# Parity codes as used in config/UI ("N"/"O"/"E"/"M"/"S") mapped to pyserial
+# constants. UNCONFIRMED: only "N" (None) at 115200 baud has been verified
+# against real hardware — see PLANNING_v1.1_COMPARISON.md section 4. Other
+# entries exist so the option is wireable once/if confirmed.
+PARITY_MAP = {
+    "N": serial.PARITY_NONE,
+    "O": serial.PARITY_ODD,
+    "E": serial.PARITY_EVEN,
+    "M": serial.PARITY_MARK,
+    "S": serial.PARITY_SPACE,
+}
+
 
 def list_com_ports():
     return [p.device for p in serial.tools.list_ports.comports()]
@@ -18,12 +30,12 @@ class SerialManager:
     def __init__(self):
         self._port: serial.Serial | None = None
 
-    def open(self, port_name: str, baud: int = BAUD_RATE):
+    def open(self, port_name: str, baud: int = BAUD_RATE, parity: str = "N"):
         self._port = serial.Serial(
             port=port_name,
             baudrate=baud,
             bytesize=serial.EIGHTBITS,
-            parity=serial.PARITY_NONE,
+            parity=PARITY_MAP.get(parity, serial.PARITY_NONE),
             stopbits=serial.STOPBITS_ONE,
             timeout=0.2,
         )
