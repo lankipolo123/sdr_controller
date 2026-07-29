@@ -21,6 +21,16 @@ PARITY_MAP = {
     "S": serial.PARITY_SPACE,
 }
 
+# Data bits as used in config/UI mapped to pyserial constants. Confirmed:
+# real vendor V1.1 software's "data bit" dropdown showed 8 in use — see
+# PLANNING_v1.1_COMPARISON.md section 4.
+DATA_BITS_MAP = {
+    5: serial.FIVEBITS,
+    6: serial.SIXBITS,
+    7: serial.SEVENBITS,
+    8: serial.EIGHTBITS,
+}
+
 
 def list_com_ports():
     return [p.device for p in serial.tools.list_ports.comports()]
@@ -30,11 +40,11 @@ class SerialManager:
     def __init__(self):
         self._port: serial.Serial | None = None
 
-    def open(self, port_name: str, baud: int = BAUD_RATE, parity: str = "N"):
+    def open(self, port_name: str, baud: int = BAUD_RATE, parity: str = "N", data_bits: int = 8):
         self._port = serial.Serial(
             port=port_name,
             baudrate=baud,
-            bytesize=serial.EIGHTBITS,
+            bytesize=DATA_BITS_MAP.get(data_bits, serial.EIGHTBITS),
             parity=PARITY_MAP.get(parity, serial.PARITY_NONE),
             stopbits=serial.STOPBITS_ONE,
             timeout=0.2,

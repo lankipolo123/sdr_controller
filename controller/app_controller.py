@@ -31,8 +31,9 @@ class AppController:
             return
         baud = self.config.get("baud_rate", 115200)
         parity = self.config.get("parity", "N")
-        self.logger.info(f"Auto-connecting to {port} at {baud} baud, parity={parity}.")
-        self.connection.connect(port, baud, parity)
+        data_bits = self.config.get("data_bits", 8)
+        self.logger.info(f"Auto-connecting to {port} at {baud} baud, parity={parity}, data_bits={data_bits}.")
+        self.connection.connect(port, baud, parity, data_bits)
 
     def shutdown(self):
         if self.connection.is_connected():

@@ -5,6 +5,7 @@ DEFAULT_CONFIG = {
     "com_port": "",
     "baud_rate": 115200,
     "parity": "N",
+    "data_bits": 8,
     "module_address": 0,
     "auto_connect": False,
     "log_folder": "logs",
