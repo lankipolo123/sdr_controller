@@ -1,24 +1,10 @@
 # SDR Noise Modulator Controller — User Guide
 
-How to actually use the app, page by page. For project internals, see
-`PROJECT_GUIDE.md`; for what's confirmed vs. guessed against real
-hardware, see `PLANNING_v1.1_COMPARISON.md`.
+How to use the app, page by page.
 
 ---
 
-## 1. Install and launch
-
-```bash
-pip install -r requirements.txt
-python main.py
-```
-
-Requires Python 3.10+. Only two dependencies: PySide6 (GUI) and pyserial
-(serial communication).
-
----
-
-## 2. First-time connection setup
+## 1. First-time connection setup
 
 Go to the **Settings** page and fill in:
 
@@ -46,18 +32,18 @@ the next time you connect or auto-connect.
 
 ---
 
-## 3. Connecting
+## 2. Connecting
 
 On the **Dashboard** page, pick your port (Refresh if it's not listed)
 and click **Connect**. The status label flips to "Connected" and the
 button becomes "Disconnect".
 
-If `auto_connect` is enabled and a valid COM port is saved, this
-happens automatically at startup, before the window even appears.
+If Auto Connect is enabled and a valid COM port is saved, this happens
+automatically at startup, before the window even appears.
 
 ---
 
-## 4. Controlling the device
+## 3. Controlling the device
 
 Go to **Device Control**:
 
@@ -83,7 +69,7 @@ protocol value never goes out to real hardware by accident.
 
 ---
 
-## 5. Reading status
+## 4. Reading status
 
 The **Dashboard** shows live cards for Connection, Output State,
 Frequency, Bandwidth, Power, and Current Mode, plus a "Last Command"
@@ -96,7 +82,7 @@ check wiring, module power, and module address, in that order.
 
 ---
 
-## 6. Communication log
+## 5. Communication log
 
 The **Communication** page shows a running, timestamped log: incoming
 raw hex (RX), parsed frame descriptions, connection/disconnection
@@ -104,19 +90,19 @@ events, errors, and timeouts. Use **Clear** to wipe it.
 
 ---
 
-## 7. First-time hardware bench test
+## 6. First-time hardware bench test
 
-Before trusting the full GUI against a device you've never connected
+Before trusting the full app against a device you've never connected
 before, do this in order:
 
 1. **Windows Device Manager** → Ports (COM & LPT) — confirm the adapter
    shows up at all.
-2. **RealTerm/Termite, no code**: 115200-8-N-1, hex mode, send
-   `7E 7E FF 00 00 0A 0D` manually. Any bytes back = wiring is alive.
-3. **`python scripts/hardware_smoke_test.py COM3`** (swap in your real
-   port) — runs this project's actual protocol code against the real
-   device, no GUI, with a clear SUCCESS/TIMEOUT/PARTIAL verdict.
-4. **Full GUI** — only after step 3 succeeds. Stick to confirmed
-   settings first (White Noise/Linear Sweep/Comb Spectrum, ≤250 MHz,
-   default parity/baud/data bits) before trying anything flagged
-   "(unconfirmed)".
+2. **RealTerm/Termite, no software needed**: 115200-8-N-1, hex mode,
+   send `7E 7E FF 00 00 0A 0D` manually. Any bytes back = wiring is alive.
+3. Run the app and use **Read Device** on the Device Control page.
+   Either the Dashboard populates with real values (success), or the
+   amber warning banner appears within 2 seconds — check wiring,
+   power, and module address, in that order.
+4. Once that works, stick to confirmed settings first (White Noise/
+   Linear Sweep/Comb Spectrum, ≤250 MHz, default parity/baud/data bits)
+   before trying anything flagged "(unconfirmed)".
