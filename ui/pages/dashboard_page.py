@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QGridLayout, QLabel, QVBoxLayout, QHBoxLayout, QSizePolicy
+from PySide6.QtWidgets import QGridLayout, QLabel, QHBoxLayout, QSizePolicy, QStyle
 
 from ui.base_page import BasePage, CONTENT_SPACING
 from ui.widgets import ConnectionWidget, HexLineDisplay, make_card
@@ -52,18 +52,16 @@ class DashboardPage(BasePage):
         boxes_row = QHBoxLayout()
         boxes_row.setSpacing(CONTENT_SPACING)
 
-        tx_box = make_card("Data Sending", accent=TX_ACCENT)
+        tx_box = make_card("Data Sending", icon=QStyle.SP_ArrowUp, accent=TX_ACCENT)
         tx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        tx_layout = QVBoxLayout(tx_box)
         self.tx_display = HexLineDisplay()
-        tx_layout.addWidget(self.tx_display)
+        tx_box.body_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
-        rx_box = make_card("Data Receiving", accent=RX_ACCENT)
+        rx_box = make_card("Data Receiving", icon=QStyle.SP_ArrowDown, accent=RX_ACCENT)
         rx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        rx_layout = QVBoxLayout(rx_box)
         self.rx_display = HexLineDisplay()
-        rx_layout.addWidget(self.rx_display)
+        rx_box.body_layout.addWidget(self.rx_display)
         boxes_row.addWidget(rx_box)
 
         layout.addLayout(boxes_row)
@@ -75,16 +73,15 @@ class DashboardPage(BasePage):
         self._refresh()
 
     def _make_status_card(self, title: str):
-        """Card styled as a compact stat tile: a small muted label (the
-        QGroupBox title) above one large, bold value — not just a plain
-        box with same-size text throughout."""
+        """Card styled as a compact stat tile: a small muted header above
+        one large, bold value — not just a plain box with same-size text
+        throughout."""
         box = make_card(title)
-        box_layout = QVBoxLayout(box)
         value_label = QLabel("—")
         value_label.setStyleSheet(
             f"color: {TEXT_DARK}; font-size: 17px; font-weight: 700; background: transparent;"
         )
-        box_layout.addWidget(value_label)
+        box.body_layout.addWidget(value_label)
         return box, value_label
 
     def _refresh(self):

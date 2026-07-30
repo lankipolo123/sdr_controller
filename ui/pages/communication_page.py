@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QSizePolicy
+from PySide6.QtWidgets import QHBoxLayout, QSizePolicy, QStyle
 from PySide6.QtCore import Qt
 
 from ui.base_page import BasePage, CONTENT_SPACING
@@ -20,18 +20,16 @@ class CommunicationPage(BasePage):
         boxes_row = QHBoxLayout()
         boxes_row.setSpacing(CONTENT_SPACING)
 
-        tx_box = make_card("Data Sending", accent=TX_ACCENT)
+        tx_box = make_card("Data Sending", icon=QStyle.SP_ArrowUp, accent=TX_ACCENT)
         tx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        tx_layout = QVBoxLayout(tx_box)
         self.tx_display = HexLineDisplay()
-        tx_layout.addWidget(self.tx_display)
+        tx_box.body_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
-        rx_box = make_card("Data Receiving", accent=RX_ACCENT)
+        rx_box = make_card("Data Receiving", icon=QStyle.SP_ArrowDown, accent=RX_ACCENT)
         rx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        rx_layout = QVBoxLayout(rx_box)
         self.rx_display = HexLineDisplay()
-        rx_layout.addWidget(self.rx_display)
+        rx_box.body_layout.addWidget(self.rx_display)
         boxes_row.addWidget(rx_box)
 
         layout.addLayout(boxes_row)

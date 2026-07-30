@@ -15,10 +15,11 @@ icon button, not a logout — this app has no accounts/sessions, so
 
 import os
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QPushButton
-from PySide6.QtGui import QPixmap, QIcon, QPainter, QColor
+from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import Qt, Signal, QSize
 
 from ..theme_colors import NAVY, TEXT_LIGHT, BORDER_SUBTLE_DARK, STATUS_ERROR
+from .icon_utils import tint_pixmap
 
 _ICON_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons", "pages")
 
@@ -32,18 +33,6 @@ ICON_SIZE = 22
 CLOSE_ICON_SIZE = 18
 CLOSE_BTN_SIZE = 34
 DEFAULT_HEIGHT = 50  # only used as a fallback if never synced to the real sidebar height
-
-
-def _tint_pixmap(pixmap: QPixmap, color: str) -> QPixmap:
-    """Recolor a monochrome icon's opaque pixels to `color`, keeping its alpha."""
-    tinted = QPixmap(pixmap.size())
-    tinted.fill(Qt.transparent)
-    painter = QPainter(tinted)
-    painter.drawPixmap(0, 0, pixmap)
-    painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
-    painter.fillRect(tinted.rect(), QColor(color))
-    painter.end()
-    return tinted
 
 
 class PageHeader(QWidget):
@@ -90,7 +79,7 @@ class PageHeader(QWidget):
         self.close_btn.setFixedSize(CLOSE_BTN_SIZE, CLOSE_BTN_SIZE)
         close_icon_path = os.path.join(_ICON_DIR, "logout.png")
         if os.path.exists(close_icon_path):
-            red_icon = _tint_pixmap(
+            red_icon = tint_pixmap(
                 QPixmap(close_icon_path).scaled(
                     CLOSE_ICON_SIZE, CLOSE_ICON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 ),

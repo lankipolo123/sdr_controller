@@ -57,31 +57,15 @@ QRadioButton::indicator:checked {{
 }}
 """
 
-# Applied app-wide via QApplication.setStyleSheet. Cards (QGroupBox) get
-# an explicit white fill distinct from the gray page canvas, plus each
-# instance gets a QGraphicsDropShadowEffect (see card_shadow() below) for
-# real elevation instead of just an outline. PrimaryButton marks the one
-# main action per section (Connect, Apply, Save, Set) with a filled
-# accent-blue treatment; everything else stays a plain secondary button,
-# so the UI has an actual visual hierarchy instead of every control
-# looking equally important.
+# Applied app-wide via QApplication.setStyleSheet. Cards are a custom
+# Card widget (ui/widgets/card.py), not QGroupBox — Qt's native QGroupBox
+# always renders its title cut into the border line no matter what QSS
+# is layered on top, so it's not used anywhere in this app anymore.
+# PrimaryButton marks the one main action per section (Connect, Apply,
+# Save, Set) with a filled accent-blue treatment; everything else stays
+# a plain secondary button, so the UI has an actual visual hierarchy
+# instead of every control looking equally important.
 GLOBAL_QSS = f"""
-QGroupBox {{
-    background: #FFFFFF;
-    border: 1px solid {BORDER_SUBTLE};
-    border-radius: 8px;
-    margin-top: 12px;
-    padding-top: 10px;
-    padding-bottom: 3px;
-    font-weight: 700;
-    font-size: 12px;
-    color: {TEXT_DARK};
-}}
-QGroupBox::title {{
-    subcontrol-origin: margin;
-    left: 12px;
-    padding: 0 5px;
-}}
 QChartView {{
     background: #FFFFFF;
     border: 1px solid {BORDER_SUBTLE};
@@ -129,9 +113,9 @@ QLineEdit:read-only {{
 
 
 def card_shadow():
-    """A subtle drop shadow for QGroupBox cards, giving them real
-    elevation off the page canvas instead of just a flat outline. Call
-    per-instance: box.setGraphicsEffect(card_shadow())."""
+    """A subtle drop shadow for Card widgets, giving them real elevation
+    off the page canvas instead of just a flat outline. Call per-instance:
+    widget.setGraphicsEffect(card_shadow())."""
     from PySide6.QtWidgets import QGraphicsDropShadowEffect
     from PySide6.QtGui import QColor
 
