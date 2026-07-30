@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QComboBox, QPushButton, QLabel
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel
+from .combo_box import ComboBox
 
 
 class ConnectionWidget(QWidget):
@@ -11,7 +12,7 @@ class ConnectionWidget(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        self.port_combo = QComboBox()
+        self.port_combo = ComboBox()
         self.refresh_btn = QPushButton("Refresh")
         self.connect_btn = QPushButton("Connect")
         self.status_label = QLabel("Disconnected")

@@ -1,14 +1,14 @@
 from PySide6.QtWidgets import (
     QHBoxLayout, QLabel, QPushButton,
-    QRadioButton, QButtonGroup, QComboBox, QMessageBox,
+    QRadioButton, QButtonGroup, QMessageBox,
     QFormLayout, QSpinBox, QCheckBox, QLineEdit
 )
 from PySide6.QtCore import Qt
 
 from ui.base_page import BasePage, CONTENT_SPACING
-from ui.widgets import FrequencyWidget, ToggleSwitch, make_card
+from ui.widgets import FrequencyWidget, ToggleSwitch, make_card, ComboBox
 from ui.widgets.confirm_dialog import ConfirmDialog
-from ui.theme_colors import RADIO_BUTTON_STYLE, STATUS_OK, TEXT_MUTED, NEUTRAL_TRACK
+from ui.theme_colors import RADIO_BUTTON_STYLE, STATUS_OK, TEXT_MUTED, NEUTRAL_TRACK, checkbox_style
 from serial_io import list_com_ports
 from protocol import constants as c
 from protocol.packet_builder import ProtocolError
@@ -40,13 +40,13 @@ class DeviceControlPage(BasePage):
         form = QFormLayout()
         form.setVerticalSpacing(6)
 
-        self.port_combo = QComboBox()
+        self.port_combo = ComboBox()
         self.port_combo.addItems(list_com_ports())
         if config.get("com_port"):
             self.port_combo.setCurrentText(config.get("com_port"))
         form.addRow("COM Port:", self.port_combo)
 
-        self.baud_combo = QComboBox()
+        self.baud_combo = ComboBox()
         for baud in BAUD_OPTIONS:
             self.baud_combo.addItem(str(baud), baud)
         saved_baud = config.get("baud_rate", 115200)
@@ -54,7 +54,7 @@ class DeviceControlPage(BasePage):
         self.baud_combo.setCurrentIndex(idx if idx >= 0 else self.baud_combo.findData(115200))
         form.addRow("Baud Rate:", self.baud_combo)
 
-        self.data_bits_combo = QComboBox()
+        self.data_bits_combo = ComboBox()
         for bits in DATA_BITS_OPTIONS:
             self.data_bits_combo.addItem(str(bits), bits)
         saved_data_bits = config.get("data_bits", 8)
@@ -62,7 +62,7 @@ class DeviceControlPage(BasePage):
         self.data_bits_combo.setCurrentIndex(idx if idx >= 0 else self.data_bits_combo.findData(8))
         form.addRow("Data Bits:", self.data_bits_combo)
 
-        self.parity_combo = QComboBox()
+        self.parity_combo = ComboBox()
         for label, code in PARITY_OPTIONS:
             self.parity_combo.addItem(label, code)
         saved_parity = config.get("parity", "N")
@@ -71,20 +71,26 @@ class DeviceControlPage(BasePage):
         form.addRow("Parity:", self.parity_combo)
 
         address_row = QHBoxLayout()
+        address_row.setSpacing(8)
         self.address_spin = QSpinBox()
         self.address_spin.setRange(0, 199)
         self.address_spin.setValue(config.get("module_address", 0))
+        self.address_spin.setMaximumWidth(90)
         address_row.addWidget(self.address_spin)
         self.query_addr_btn = QPushButton("Query")
+        self.query_addr_btn.setFixedWidth(70)
         self.query_addr_btn.clicked.connect(self.app.device.query_address)
         address_row.addWidget(self.query_addr_btn)
         self.set_addr_btn = QPushButton("Set")
         self.set_addr_btn.setObjectName("PrimaryButton")
+        self.set_addr_btn.setFixedWidth(70)
         self.set_addr_btn.clicked.connect(self._on_set_address)
         address_row.addWidget(self.set_addr_btn)
+        address_row.addStretch()
         form.addRow("Module Address:", address_row)
 
         self.auto_connect_check = QCheckBox()
+        self.auto_connect_check.setStyleSheet(checkbox_style())
         self.auto_connect_check.setChecked(config.get("auto_connect", False))
         form.addRow("Auto Connect:", self.auto_connect_check)
 
@@ -142,7 +148,7 @@ class DeviceControlPage(BasePage):
 
         bw_row = QHBoxLayout()
         bw_row.addWidget(QLabel("Bandwidth:"))
-        self.bw_combo = QComboBox()
+        self.bw_combo = ComboBox()
         for mhz in c.BANDWIDTH_CODES.keys():
             suffix = " (unconfirmed)" if mhz in c.BANDWIDTH_UNCONFIRMED else ""
             self.bw_combo.addItem(f"{mhz} MHz{suffix}", mhz)
@@ -153,7 +159,7 @@ class DeviceControlPage(BasePage):
 
         power_row = QHBoxLayout()
         power_row.addWidget(QLabel("Power:"))
-        self.power_combo = QComboBox()
+        self.power_combo = ComboBox()
         for db in c.POWER_CODES.keys():
             self.power_combo.addItem("0 dB (max)" if db == 0 else f"{db} dB", db)
         power_row.addWidget(self.power_combo)
