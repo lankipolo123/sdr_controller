@@ -15,23 +15,17 @@ icon button, not a logout — this app has no accounts/sessions, so
 
 import os
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QPushButton
-from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, Signal, QSize
 
 from ..theme_colors import NAVY, TEXT_LIGHT, BORDER_SUBTLE_DARK, STATUS_ERROR
-from .icon_utils import tint_pixmap
+from .icon_utils import nav_icon_pixmap, tint_pixmap
 
 _ICON_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons", "pages")
 
-_ICON_FILES = {
-    "dashboard": "dashboard.png",
-    "device_control": "device_control.png",
-    "communication": "communication.png",
-}
-
-ICON_SIZE = 22
-CLOSE_ICON_SIZE = 18
-CLOSE_BTN_SIZE = 34
+ICON_SIZE = 20
+CLOSE_ICON_SIZE = 24
+CLOSE_BTN_SIZE = 40
 DEFAULT_HEIGHT = 50  # only used as a fallback if never synced to the real sidebar height
 
 
@@ -57,12 +51,7 @@ class PageHeader(QWidget):
         layout.setSpacing(10)
 
         icon_label = QLabel()
-        icon_path = os.path.join(_ICON_DIR, _ICON_FILES.get(icon_key, ""))
-        if os.path.exists(icon_path):
-            pixmap = QPixmap(icon_path).scaled(
-                ICON_SIZE, ICON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            )
-            icon_label.setPixmap(pixmap)
+        icon_label.setPixmap(nav_icon_pixmap(icon_key, ICON_SIZE, TEXT_LIGHT))
         icon_label.setStyleSheet("background: transparent;")
         layout.addWidget(icon_label)
 
@@ -79,6 +68,7 @@ class PageHeader(QWidget):
         self.close_btn.setFixedSize(CLOSE_BTN_SIZE, CLOSE_BTN_SIZE)
         close_icon_path = os.path.join(_ICON_DIR, "logout.png")
         if os.path.exists(close_icon_path):
+            from PySide6.QtGui import QPixmap
             red_icon = tint_pixmap(
                 QPixmap(close_icon_path).scaled(
                     CLOSE_ICON_SIZE, CLOSE_ICON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation

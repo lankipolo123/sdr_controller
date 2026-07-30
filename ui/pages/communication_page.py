@@ -39,7 +39,7 @@ class CommunicationPage(BasePage):
         # troubleshooting a real bench-test session where you need to see
         # what happened several messages ago (a timeout, an error, the
         # exact command that preceded a disconnect).
-        log_box = make_card("Activity Log", icon=QStyle.SP_FileDialogDetailedView)
+        log_box = make_card("Activity Log", icon=QStyle.SP_CommandLink)
         self.log = TerminalWidget()
         log_box.body_layout.addWidget(self.log)
         layout.addWidget(log_box, 5)

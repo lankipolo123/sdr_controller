@@ -35,7 +35,7 @@ class DeviceControlPage(BasePage):
         layout = self.content_layout
 
         # Connection & app settings
-        settings_box = make_card("Connection & App Settings", icon=QStyle.SP_ComputerIcon)
+        settings_box = make_card("Connection & App Settings", icon=QStyle.SP_FileIcon)
         settings_box_layout = settings_box.body_layout
         form = QFormLayout()
         form.setVerticalSpacing(6)

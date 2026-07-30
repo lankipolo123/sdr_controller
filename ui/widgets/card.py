@@ -1,10 +1,10 @@
 import os
-from PySide6.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QApplication
+from PySide6.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
 
 from ..theme_colors import card_shadow, TEXT_DARK, BORDER_SUBTLE, ACCENT_BLUE
-from .icon_utils import tint_pixmap
+from .icon_utils import tint_pixmap, standard_icon_pixmap
 
 _ICON_SIZE = 15
 _ASSET_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons", "pages")
@@ -22,10 +22,8 @@ def _resolve_icon(icon, tint_color: str):
         pixmap = QPixmap(path).scaled(
             _ICON_SIZE, _ICON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation
         )
-    else:
-        style = QApplication.instance().style()
-        pixmap = style.standardIcon(icon).pixmap(_ICON_SIZE, _ICON_SIZE)
-    return tint_pixmap(pixmap, tint_color)
+        return tint_pixmap(pixmap, tint_color)
+    return standard_icon_pixmap(icon, _ICON_SIZE, tint_color)
 
 
 class Card(QFrame):
