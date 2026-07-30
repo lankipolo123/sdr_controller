@@ -21,12 +21,12 @@ class FrequencyWidget(QWidget):
         layout.addWidget(self.spin)
 
         self.minus_btn = QPushButton("-")
-        self.minus_btn.setFixedWidth(28)
+        self.minus_btn.setFixedWidth(36)
         self.minus_btn.clicked.connect(self._step_down)
         layout.addWidget(self.minus_btn)
 
         self.plus_btn = QPushButton("+")
-        self.plus_btn.setFixedWidth(28)
+        self.plus_btn.setFixedWidth(36)
         self.plus_btn.clicked.connect(self._step_up)
         layout.addWidget(self.plus_btn)
 

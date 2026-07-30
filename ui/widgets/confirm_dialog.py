@@ -1,12 +1,12 @@
 """
 Reusable themed confirmation dialog — replaces the default OS QMessageBox
-(which looked out of place against the app's light/accent theme) with a
-clean, frameless, rounded panel matching the rest of the UI.
+(which looked out of place against the app's theme) with a clean,
+frameless, rounded panel matching the rest of the UI.
 
 Usage:
-    if ConfirmDialog.ask(self, "Log out",
+    if ConfirmDialog.ask(self, "Close Application",
                           "This will disconnect and close the app.",
-                          confirm_text="Logout", danger=True):
+                          confirm_text="Close", danger=True):
         ...
 """
 

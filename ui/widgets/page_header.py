@@ -1,41 +1,53 @@
 """
 Reusable page header. Spans the full width of the page (BasePage gives it
-a zero-margin outer layout to make this true) — same white background as
+a zero-margin outer layout to make this true) — same navy background as
 the sidebar, with a thin bottom divider. Height matches the sidebar's
 active row height (50px, confirmed via Sidebar.visualItemRect) so the
 header lines up visually with the sidebar rather than having an
 arbitrary height of its own.
 
-Includes a Logout button on the right — emits `logout_requested` so
-whatever owns this header (BasePage) decides what logging out actually
-means (this widget itself has no app/connection knowledge).
+Includes a Close Application button on the right — emits `close_requested`
+so whatever owns this header (BasePage) decides what closing actually
+means (this widget itself has no app/connection knowledge). It's a plain
+icon button, not a logout — this app has no accounts/sessions, so
+"logout" never described what it actually does.
 """
 
 import os
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QPushButton
-from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtGui import QPixmap, QIcon, QPainter, QColor
 from PySide6.QtCore import Qt, Signal, QSize
 
-from ..theme_colors import SURFACE, ACCENT_BLUE, TEXT_DARK, BORDER_SUBTLE, STATUS_ERROR, STATUS_ERROR_DARK
+from ..theme_colors import NAVY, TEXT_LIGHT, BORDER_SUBTLE_DARK, STATUS_ERROR
 
 _ICON_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons", "pages")
 
 _ICON_FILES = {
     "dashboard": "dashboard.png",
     "device_control": "device_control.png",
-    "status": "status.png",
     "communication": "communication.png",
-    "settings": "settings.png",
 }
 
 ICON_SIZE = 22
-LOGOUT_ICON_SIZE = 18
-LOGOUT_BTN_SIZE = 34
+CLOSE_ICON_SIZE = 18
+CLOSE_BTN_SIZE = 34
 DEFAULT_HEIGHT = 50  # only used as a fallback if never synced to the real sidebar height
 
 
+def _tint_pixmap(pixmap: QPixmap, color: str) -> QPixmap:
+    """Recolor a monochrome icon's opaque pixels to `color`, keeping its alpha."""
+    tinted = QPixmap(pixmap.size())
+    tinted.fill(Qt.transparent)
+    painter = QPainter(tinted)
+    painter.drawPixmap(0, 0, pixmap)
+    painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+    painter.fillRect(tinted.rect(), QColor(color))
+    painter.end()
+    return tinted
+
+
 class PageHeader(QWidget):
-    logout_requested = Signal()
+    close_requested = Signal()
 
     def __init__(self, title: str, icon_key: str, parent=None):
         super().__init__(parent)
@@ -46,8 +58,8 @@ class PageHeader(QWidget):
 
         self.setObjectName("PageHeader")
         self.setStyleSheet(
-            f"#PageHeader {{ background: {SURFACE}; "
-            f"border-bottom: 1px solid {BORDER_SUBTLE}; }}"
+            f"#PageHeader {{ background: {NAVY}; "
+            f"border-bottom: 1px solid {BORDER_SUBTLE_DARK}; }}"
         )
         self.setFixedHeight(DEFAULT_HEIGHT)
 
@@ -67,24 +79,30 @@ class PageHeader(QWidget):
 
         title_label = QLabel(title)
         title_label.setStyleSheet(
-            f"color: {TEXT_DARK}; font-size: 17px; font-weight: 700; background: transparent;"
+            f"color: {TEXT_LIGHT}; font-size: 17px; font-weight: 700; background: transparent;"
         )
         layout.addWidget(title_label)
         layout.addStretch()
 
-        self.logout_btn = QPushButton()
-        self.logout_btn.setCursor(Qt.PointingHandCursor)
-        self.logout_btn.setToolTip("Logout")
-        self.logout_btn.setFixedSize(LOGOUT_BTN_SIZE, LOGOUT_BTN_SIZE)
-        logout_icon_path = os.path.join(_ICON_DIR, "logout.png")
-        if os.path.exists(logout_icon_path):
-            self.logout_btn.setIcon(QIcon(logout_icon_path))
-            self.logout_btn.setIconSize(QSize(LOGOUT_ICON_SIZE, LOGOUT_ICON_SIZE))
-        self.logout_btn.setStyleSheet(
-            f"QPushButton {{ background: {STATUS_ERROR}; border: none; "
-            f"border-radius: {LOGOUT_BTN_SIZE // 2}px; }}"
-            f"QPushButton:hover {{ background: {STATUS_ERROR_DARK}; }}"
-            f"QPushButton:pressed {{ background: {STATUS_ERROR_DARK}; }}"
+        self.close_btn = QPushButton()
+        self.close_btn.setCursor(Qt.PointingHandCursor)
+        self.close_btn.setToolTip("Close Application")
+        self.close_btn.setFixedSize(CLOSE_BTN_SIZE, CLOSE_BTN_SIZE)
+        close_icon_path = os.path.join(_ICON_DIR, "logout.png")
+        if os.path.exists(close_icon_path):
+            red_icon = _tint_pixmap(
+                QPixmap(close_icon_path).scaled(
+                    CLOSE_ICON_SIZE, CLOSE_ICON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                ),
+                STATUS_ERROR,
+            )
+            self.close_btn.setIcon(QIcon(red_icon))
+            self.close_btn.setIconSize(QSize(CLOSE_ICON_SIZE, CLOSE_ICON_SIZE))
+        self.close_btn.setStyleSheet(
+            f"QPushButton {{ background: transparent; border: none; "
+            f"border-radius: {CLOSE_BTN_SIZE // 2}px; }}"
+            f"QPushButton:hover {{ background: rgba(176, 0, 32, 30); }}"
+            f"QPushButton:pressed {{ background: rgba(176, 0, 32, 60); }}"
         )
-        self.logout_btn.clicked.connect(self.logout_requested.emit)
-        layout.addWidget(self.logout_btn)
+        self.close_btn.clicked.connect(self.close_requested.emit)
+        layout.addWidget(self.close_btn)

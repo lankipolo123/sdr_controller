@@ -7,29 +7,26 @@ the whole app stays visually consistent and can be re-themed from one
 place later.
 """
 
-SURFACE = "#FFFFFF"        # sidebar, header, dialogs, splash screen
+NAVY = "#1F2937"           # sidebar/header background — intentionally kept dark
+SURFACE = "#FFFFFF"        # dialogs, splash screen
 CONTENT_BG = "#F5F6F8"     # main page canvas behind group boxes
 ACCENT_BLUE = "#64AAFF"    # icon's bar color — primary accent everywhere
 ACCENT_BLUE_DARK = "#4A8AD9"  # slightly darker, for hover/pressed states
-BORDER_SUBTLE = "#E2E5EA"  # thin neutral divider — sidebar/content split, header bottom line
+BORDER_SUBTLE = "#E2E5EA"  # thin neutral divider on light surfaces
+BORDER_SUBTLE_DARK = "#374151"  # thin neutral divider on the dark sidebar/header
 NEUTRAL_TRACK = "#CBD5E1"  # unchecked toggle-switch track — needs more contrast than a 1px divider
 
 TEXT_DARK = "#111827"      # primary text on light backgrounds
 TEXT_MUTED = "#6B7280"     # muted gray for secondary labels
+TEXT_LIGHT = "#E5E7EB"     # light text on the dark sidebar/header
 SIDEBAR_SELECTED_TEXT = "#1F2937"  # text for the selected sidebar row, which sits on accent blue
-
-# Kept only for status_card.py/section_card.py, which are unused by any
-# page (see HANDOFF_GUIDE.md) but still imported by ui/widgets/__init__.py
-# at startup — removing this would break the app on launch even though
-# the widgets themselves are dead code.
-TEXT_LIGHT = "#E5E7EB"
 
 # Semantic status colors — intentionally NOT tied to the accent blue, since
 # green/red convey connected/disconnected state and shouldn't be sacrificed
 # for brand consistency.
 STATUS_OK = "#087F23"
 STATUS_ERROR = "#B00020"
-STATUS_ERROR_DARK = "#8A0018"  # hover/pressed shade for the red logout circle
+STATUS_ERROR_DARK = "#8A0018"  # hover/pressed shade for red danger actions
 WARNING_BG = "#FEF3C7"
 WARNING_BORDER = "#F59E0B"
 WARNING_TEXT = "#92400E"
@@ -51,6 +48,46 @@ QRadioButton::indicator {{
 }}
 QRadioButton::indicator:checked {{
     border: 2px solid {ACCENT_BLUE}; background: {ACCENT_BLUE};
+}}
+"""
+
+# Applied app-wide via QApplication.setStyleSheet — a little visual
+# refinement (rounded corners, breathing room) on top of Fusion's flat
+# look, without turning plain QGroupBox sections into full custom cards.
+GLOBAL_QSS = f"""
+QGroupBox {{
+    border: 1px solid {BORDER_SUBTLE};
+    border-radius: 8px;
+    margin-top: 14px;
+    padding-top: 12px;
+    font-weight: 600;
+    color: {TEXT_DARK};
+}}
+QGroupBox::title {{
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 6px;
+}}
+QPushButton {{
+    background: #FFFFFF;
+    border: 1px solid {BORDER_SUBTLE};
+    border-radius: 6px;
+    padding: 5px 12px;
+}}
+QPushButton:hover {{
+    border-color: {ACCENT_BLUE};
+}}
+QPushButton:pressed {{
+    background: {CONTENT_BG};
+}}
+QComboBox, QLineEdit, QSpinBox {{
+    background: #FFFFFF;
+    border: 1px solid {BORDER_SUBTLE};
+    border-radius: 6px;
+    padding: 3px 6px;
+}}
+QComboBox:focus, QLineEdit:focus, QSpinBox:focus {{
+    border-color: {ACCENT_BLUE};
 }}
 """
 
