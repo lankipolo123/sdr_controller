@@ -11,10 +11,19 @@ _ASSET_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icon
 
 
 def _resolve_icon(icon, tint_color: str):
-    """`icon` is either a QStyle.StandardPixmap enum or an asset filename
-    (e.g. "logout.png"). Returns a tinted QPixmap, or None."""
+    """`icon` is one of:
+    - a "fa5s.icon-name" string -> crisp vector icon via qtawesome (preferred:
+      renders at any size with no blur, and tints natively via `color`)
+    - any other string -> asset filename (e.g. "logout.png") from assets/icons/pages
+    - a QStyle.StandardPixmap enum -> OS-native icon (blurry when scaled/tinted;
+      only kept for back-compat, avoid for new icons)
+    Returns a tinted QPixmap, or None.
+    """
     if icon is None:
         return None
+    if isinstance(icon, str) and icon.startswith(("fa5s.", "fa5b.", "fa5r.", "mdi.", "mdi6.")):
+        import qtawesome as qta
+        return qta.icon(icon, color=tint_color).pixmap(_ICON_SIZE, _ICON_SIZE)
     if isinstance(icon, str):
         path = os.path.join(_ASSET_DIR, icon)
         if not os.path.exists(path):

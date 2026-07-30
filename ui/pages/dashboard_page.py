@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QGridLayout, QLabel, QHBoxLayout, QSizePolicy, QStyle
+from PySide6.QtWidgets import QGridLayout, QLabel, QHBoxLayout, QSizePolicy
 
 from ui.base_page import BasePage, CONTENT_SPACING
 from ui.widgets import ConnectionWidget, HexLineDisplay, make_card
@@ -30,12 +30,18 @@ class DashboardPage(BasePage):
 
         grid = QGridLayout()
         grid.setSpacing(CONTENT_SPACING)
-        self.card_connection, self.value_connection = self._make_status_card("Connection")
-        self.card_output, self.value_output = self._make_status_card("Output State")
-        self.card_frequency, self.value_frequency = self._make_status_card("Frequency")
-        self.card_bandwidth, self.value_bandwidth = self._make_status_card("Bandwidth")
-        self.card_power, self.value_power = self._make_status_card("Power")
-        self.card_mode, self.value_mode = self._make_status_card("Current Mode")
+        self.card_connection, self.value_connection = self._make_status_card(
+            "Connection", "fa5s.plug")
+        self.card_output, self.value_output = self._make_status_card(
+            "Output State", "fa5s.power-off")
+        self.card_frequency, self.value_frequency = self._make_status_card(
+            "Frequency", "fa5s.wave-square")
+        self.card_bandwidth, self.value_bandwidth = self._make_status_card(
+            "Bandwidth", "fa5s.chart-bar")
+        self.card_power, self.value_power = self._make_status_card(
+            "Power", "fa5s.bolt")
+        self.card_mode, self.value_mode = self._make_status_card(
+            "Current Mode", "fa5s.sliders-h")
 
         cards = [self.card_connection, self.card_output, self.card_frequency,
                  self.card_bandwidth, self.card_power, self.card_mode]
@@ -52,13 +58,13 @@ class DashboardPage(BasePage):
         boxes_row = QHBoxLayout()
         boxes_row.setSpacing(CONTENT_SPACING)
 
-        tx_box = make_card("Data Sending", icon=QStyle.SP_ArrowUp, accent=TX_ACCENT)
+        tx_box = make_card("Data Sending", icon="fa5s.arrow-up", accent=TX_ACCENT)
         tx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.tx_display = HexLineDisplay()
         tx_box.body_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
-        rx_box = make_card("Data Receiving", icon=QStyle.SP_ArrowDown, accent=RX_ACCENT)
+        rx_box = make_card("Data Receiving", icon="fa5s.arrow-down", accent=RX_ACCENT)
         rx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.rx_display = HexLineDisplay()
         rx_box.body_layout.addWidget(self.rx_display)
@@ -72,11 +78,13 @@ class DashboardPage(BasePage):
 
         self._refresh()
 
-    def _make_status_card(self, title: str):
+    def _make_status_card(self, title: str, icon=None):
         """Card styled as a compact stat tile: a small muted header above
         one large, bold value — not just a plain box with same-size text
-        throughout."""
-        box = make_card(title)
+        throughout. Icon is tinted TEXT_MUTED (not the bold accent blue)
+        so it reads as a light, secondary decoration rather than competing
+        with the value text for attention."""
+        box = make_card(title, icon=icon, accent=TEXT_MUTED)
         value_label = QLabel("—")
         value_label.setStyleSheet(
             f"color: {TEXT_DARK}; font-size: 17px; font-weight: 700; background: transparent;"

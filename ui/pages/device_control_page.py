@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (
-    QHBoxLayout, QLabel, QPushButton, QStyle,
+    QHBoxLayout, QLabel, QPushButton,
     QRadioButton, QButtonGroup, QComboBox, QMessageBox,
     QFormLayout, QSpinBox, QCheckBox, QLineEdit
 )
@@ -35,7 +35,7 @@ class DeviceControlPage(BasePage):
         layout = self.content_layout
 
         # Connection & app settings
-        settings_box = make_card("Connection & App Settings", icon=QStyle.SP_ComputerIcon)
+        settings_box = make_card("Connection & App Settings", icon="fa5s.cog")
         settings_box_layout = settings_box.body_layout
         form = QFormLayout()
         form.setVerticalSpacing(6)
@@ -103,7 +103,7 @@ class DeviceControlPage(BasePage):
         # Output controls — a status pill next to the switch instead of a
         # plain static label, so the card's own color communicates state
         # at a glance instead of relying on the toggle's position alone.
-        output_box = make_card("Output", icon="logout.png")
+        output_box = make_card("Output", icon="fa5s.broadcast-tower")
         output_row = QHBoxLayout()
         output_box.body_layout.addLayout(output_row)
         self.output_toggle = ToggleSwitch()
@@ -119,7 +119,7 @@ class DeviceControlPage(BasePage):
         layout.addWidget(output_box)
 
         # Signal settings
-        signal_box = make_card("Signal Settings", icon=QStyle.SP_MediaVolume)
+        signal_box = make_card("Signal Settings", icon="fa5s.satellite-dish")
         signal_layout = signal_box.body_layout
 
         mode_row = QHBoxLayout()
