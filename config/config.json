@@ -1,7 +1,9 @@
 {
-  "com_port": "",
+  "com_port": "COM3",
   "baud_rate": 115200,
+  "parity": "N",
+  "data_bits": 8,
   "module_address": 0,
-  "auto_connect": false,
+  "auto_connect": true,
   "log_folder": "logs"
 }

@@ -98,12 +98,21 @@ QPushButton#PrimaryButton:pressed {{
 }}
 QComboBox, QLineEdit, QSpinBox {{
     background: #FFFFFF;
+    color: {TEXT_DARK};
     border: 1px solid {BORDER_SUBTLE};
     border-radius: 5px;
     padding: 2px 6px;
 }}
 QComboBox:focus, QLineEdit:focus, QSpinBox:focus {{
     border-color: {ACCENT_BLUE};
+}}
+QComboBox QAbstractItemView {{
+    background: #FFFFFF;
+    color: {TEXT_DARK};
+    border: 1px solid {BORDER_SUBTLE};
+    outline: 0;
+    selection-background-color: {ACCENT_BLUE};
+    selection-color: #FFFFFF;
 }}
 QLineEdit:read-only {{
     background: {CONTENT_BG};
