@@ -47,7 +47,7 @@ class Card(QFrame):
         self.setObjectName("Card")
         self.setStyleSheet(
             f"#Card {{ background: #FFFFFF; border: 1px solid {BORDER_SUBTLE}; "
-            f"border-top: 3px solid {accent}; border-radius: 10px; }}"
+            f"border-radius: 10px; }}"
         )
         self.setGraphicsEffect(card_shadow())
 
