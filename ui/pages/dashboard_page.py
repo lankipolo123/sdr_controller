@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QGridLayout, QLabel, QVBoxLayout, QHBoxLayout, QSi
 
 from ui.base_page import BasePage, CONTENT_SPACING
 from ui.widgets import ConnectionWidget, HexLineDisplay, make_card
-from ui.theme_colors import TEXT_DARK, TEXT_MUTED, ACCENT_BLUE
+from ui.theme_colors import TEXT_DARK, TEXT_MUTED, ACCENT_BLUE, TX_ACCENT, RX_ACCENT
 from protocol import constants as c
 
 
@@ -22,7 +22,7 @@ class DashboardPage(BasePage):
         self.warning_label = QLabel("")
         self.warning_label.setStyleSheet(
             "color: #92400e; background: #fef3c7; border: 1px solid #f59e0b; "
-            "border-radius: 8px; padding: 10px; font-weight: 600;"
+            "border-radius: 6px; padding: 6px 8px; font-weight: 600;"
         )
         self.warning_label.setVisible(False)
         self.warning_label.setWordWrap(True)
@@ -52,14 +52,14 @@ class DashboardPage(BasePage):
         boxes_row = QHBoxLayout()
         boxes_row.setSpacing(CONTENT_SPACING)
 
-        tx_box = make_card("Data Sending")
+        tx_box = make_card("Data Sending", accent=TX_ACCENT)
         tx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         tx_layout = QVBoxLayout(tx_box)
         self.tx_display = HexLineDisplay()
         tx_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
-        rx_box = make_card("Data Receiving")
+        rx_box = make_card("Data Receiving", accent=RX_ACCENT)
         rx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         rx_layout = QVBoxLayout(rx_box)
         self.rx_display = HexLineDisplay()
@@ -82,7 +82,7 @@ class DashboardPage(BasePage):
         box_layout = QVBoxLayout(box)
         value_label = QLabel("—")
         value_label.setStyleSheet(
-            f"color: {TEXT_DARK}; font-size: 20px; font-weight: 700; background: transparent;"
+            f"color: {TEXT_DARK}; font-size: 17px; font-weight: 700; background: transparent;"
         )
         box_layout.addWidget(value_label)
         return box, value_label
@@ -92,12 +92,12 @@ class DashboardPage(BasePage):
         self.value_connection.setText("Connected" if d.connected else "Disconnected")
         self.value_connection.setStyleSheet(
             f"color: {'#087F23' if d.connected else '#B00020'}; "
-            f"font-size: 20px; font-weight: 700; background: transparent;"
+            f"font-size: 17px; font-weight: 700; background: transparent;"
         )
         self.value_output.setText("ON" if d.output_on else "OFF")
         self.value_output.setStyleSheet(
             f"color: {ACCENT_BLUE if d.output_on else TEXT_MUTED}; "
-            f"font-size: 20px; font-weight: 700; background: transparent;"
+            f"font-size: 17px; font-weight: 700; background: transparent;"
         )
         self.value_frequency.setText(f"{d.frequency_mhz} MHz" if d.frequency_mhz else "—")
         self.value_bandwidth.setText(f"{d.bandwidth_mhz} MHz" if d.bandwidth_mhz else "—")

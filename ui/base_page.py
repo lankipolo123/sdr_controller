@@ -21,8 +21,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QApplication
 
 from ui.widgets import PageHeader, ConfirmDialog
 
-CONTENT_MARGIN = 24
-CONTENT_SPACING = 18
+CONTENT_MARGIN = 16
+CONTENT_SPACING = 12
 
 
 class BasePage(QWidget):

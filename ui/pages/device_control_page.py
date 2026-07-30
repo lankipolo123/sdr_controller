@@ -3,11 +3,12 @@ from PySide6.QtWidgets import (
     QRadioButton, QButtonGroup, QComboBox, QMessageBox,
     QFormLayout, QSpinBox, QCheckBox, QLineEdit
 )
+from PySide6.QtCore import Qt
 
 from ui.base_page import BasePage, CONTENT_SPACING
 from ui.widgets import FrequencyWidget, ToggleSwitch, make_card
 from ui.widgets.confirm_dialog import ConfirmDialog
-from ui.theme_colors import RADIO_BUTTON_STYLE
+from ui.theme_colors import RADIO_BUTTON_STYLE, STATUS_OK, TEXT_MUTED, NEUTRAL_TRACK
 from serial_io import list_com_ports
 from protocol import constants as c
 from protocol.packet_builder import ProtocolError
@@ -36,9 +37,9 @@ class DeviceControlPage(BasePage):
         # Connection & app settings
         settings_box = make_card("Connection & App Settings")
         settings_box_layout = QVBoxLayout(settings_box)
-        settings_box_layout.setSpacing(12)
+        settings_box_layout.setSpacing(8)
         form = QFormLayout()
-        form.setVerticalSpacing(10)
+        form.setVerticalSpacing(6)
 
         self.port_combo = QComboBox()
         self.port_combo.addItems(list_com_ports())
@@ -100,21 +101,27 @@ class DeviceControlPage(BasePage):
 
         layout.addWidget(settings_box)
 
-        # Output controls
+        # Output controls — a status pill next to the switch instead of a
+        # plain static label, so the card's own color communicates state
+        # at a glance instead of relying on the toggle's position alone.
         output_box = make_card("Output")
         output_row = QHBoxLayout(output_box)
         self.output_toggle = ToggleSwitch()
         self.output_toggle.toggled.connect(self._on_output_toggled)
-        output_label = QLabel("Output ON/OFF")
         output_row.addWidget(self.output_toggle)
-        output_row.addWidget(output_label)
+
+        self.output_status_pill = QLabel("OFF")
+        self.output_status_pill.setAlignment(Qt.AlignCenter)
+        self.output_status_pill.setFixedWidth(56)
+        self._style_output_pill(False)
+        output_row.addWidget(self.output_status_pill)
         output_row.addStretch()
         layout.addWidget(output_box)
 
         # Signal settings
         signal_box = make_card("Signal Settings")
         signal_layout = QVBoxLayout(signal_box)
-        signal_layout.setSpacing(12)
+        signal_layout.setSpacing(8)
 
         mode_row = QHBoxLayout()
         mode_row.addWidget(QLabel("Mode:"))
@@ -209,10 +216,20 @@ class DeviceControlPage(BasePage):
             QMessageBox.warning(self, "Invalid settings", str(e))
 
     def _on_output_toggled(self, checked: bool):
+        self._style_output_pill(checked)
         if checked:
             self.app.device.turn_output_on()
         else:
             self.app.device.turn_output_off()
+
+    def _style_output_pill(self, is_on: bool):
+        self.output_status_pill.setText("ON" if is_on else "OFF")
+        bg = STATUS_OK if is_on else NEUTRAL_TRACK
+        color = "#FFFFFF" if is_on else TEXT_MUTED
+        self.output_status_pill.setStyleSheet(
+            f"background: {bg}; color: {color}; font-weight: 700; "
+            f"font-size: 11px; border-radius: 9px; padding: 3px 0;"
+        )
 
     def _on_save(self):
         config = self.app.config

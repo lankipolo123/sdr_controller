@@ -31,6 +31,12 @@ WARNING_BG = "#FEF3C7"
 WARNING_BORDER = "#F59E0B"
 WARNING_TEXT = "#92400E"
 
+# Direction accents — TX and RX need to read as visually distinct at a
+# glance (chart legend, Data Sending/Receiving cards), not just labeled
+# the same way.
+TX_ACCENT = ACCENT_BLUE
+RX_ACCENT = "#10B981"  # emerald — distinct from STATUS_OK so it reads as "receiving," not "success"
+
 # Dialog surface — plain white panel with a subtle border/shadow so a
 # modal reads as "on top of" the app rather than blending into it.
 DIALOG_BG = "#FFFFFF"
@@ -63,30 +69,30 @@ GLOBAL_QSS = f"""
 QGroupBox {{
     background: #FFFFFF;
     border: 1px solid {BORDER_SUBTLE};
-    border-radius: 10px;
-    margin-top: 18px;
-    padding-top: 16px;
-    padding-bottom: 6px;
+    border-radius: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    padding-bottom: 3px;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12px;
     color: {TEXT_DARK};
 }}
 QGroupBox::title {{
     subcontrol-origin: margin;
-    left: 14px;
-    padding: 0 6px;
+    left: 12px;
+    padding: 0 5px;
 }}
 QChartView {{
     background: #FFFFFF;
     border: 1px solid {BORDER_SUBTLE};
-    border-radius: 10px;
+    border-radius: 8px;
 }}
 QPushButton {{
     background: #FFFFFF;
     color: {TEXT_DARK};
     border: 1px solid {BORDER_SUBTLE};
-    border-radius: 6px;
-    padding: 6px 14px;
+    border-radius: 5px;
+    padding: 4px 10px;
 }}
 QPushButton:hover {{
     border-color: {ACCENT_BLUE};
@@ -109,8 +115,8 @@ QPushButton#PrimaryButton:pressed {{
 QComboBox, QLineEdit, QSpinBox {{
     background: #FFFFFF;
     border: 1px solid {BORDER_SUBTLE};
-    border-radius: 6px;
-    padding: 4px 8px;
+    border-radius: 5px;
+    padding: 2px 6px;
 }}
 QComboBox:focus, QLineEdit:focus, QSpinBox:focus {{
     border-color: {ACCENT_BLUE};
@@ -130,8 +136,8 @@ def card_shadow():
     from PySide6.QtGui import QColor
 
     effect = QGraphicsDropShadowEffect()
-    effect.setBlurRadius(18)
-    effect.setOffset(0, 3)
+    effect.setBlurRadius(12)
+    effect.setOffset(0, 2)
     effect.setColor(QColor(17, 24, 39, 30))  # TEXT_DARK at low alpha
     return effect
 
