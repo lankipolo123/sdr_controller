@@ -21,7 +21,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QApplication
 
 from ui.widgets import PageHeader, ConfirmDialog
 
-CONTENT_MARGIN = 20
+CONTENT_MARGIN = 24
+CONTENT_SPACING = 18
 
 
 class BasePage(QWidget):
@@ -42,6 +43,7 @@ class BasePage(QWidget):
         self.content_layout.setContentsMargins(
             CONTENT_MARGIN, CONTENT_MARGIN, CONTENT_MARGIN, CONTENT_MARGIN
         )
+        self.content_layout.setSpacing(CONTENT_SPACING)
         outer.addWidget(content)
 
     def _on_close_requested(self):

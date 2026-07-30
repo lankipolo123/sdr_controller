@@ -51,28 +51,42 @@ QRadioButton::indicator:checked {{
 }}
 """
 
-# Applied app-wide via QApplication.setStyleSheet — a little visual
-# refinement (rounded corners, breathing room) on top of Fusion's flat
-# look, without turning plain QGroupBox sections into full custom cards.
+# Applied app-wide via QApplication.setStyleSheet. Cards (QGroupBox) get
+# an explicit white fill distinct from the gray page canvas, plus each
+# instance gets a QGraphicsDropShadowEffect (see card_shadow() below) for
+# real elevation instead of just an outline. PrimaryButton marks the one
+# main action per section (Connect, Apply, Save, Set) with a filled
+# accent-blue treatment; everything else stays a plain secondary button,
+# so the UI has an actual visual hierarchy instead of every control
+# looking equally important.
 GLOBAL_QSS = f"""
 QGroupBox {{
+    background: #FFFFFF;
     border: 1px solid {BORDER_SUBTLE};
-    border-radius: 8px;
-    margin-top: 14px;
-    padding-top: 12px;
-    font-weight: 600;
+    border-radius: 10px;
+    margin-top: 18px;
+    padding-top: 16px;
+    padding-bottom: 6px;
+    font-weight: 700;
+    font-size: 13px;
     color: {TEXT_DARK};
 }}
 QGroupBox::title {{
     subcontrol-origin: margin;
-    left: 10px;
+    left: 14px;
     padding: 0 6px;
+}}
+QChartView {{
+    background: #FFFFFF;
+    border: 1px solid {BORDER_SUBTLE};
+    border-radius: 10px;
 }}
 QPushButton {{
     background: #FFFFFF;
+    color: {TEXT_DARK};
     border: 1px solid {BORDER_SUBTLE};
     border-radius: 6px;
-    padding: 5px 12px;
+    padding: 6px 14px;
 }}
 QPushButton:hover {{
     border-color: {ACCENT_BLUE};
@@ -80,16 +94,46 @@ QPushButton:hover {{
 QPushButton:pressed {{
     background: {CONTENT_BG};
 }}
+QPushButton#PrimaryButton {{
+    background: {ACCENT_BLUE};
+    color: #FFFFFF;
+    border: none;
+    font-weight: 600;
+}}
+QPushButton#PrimaryButton:hover {{
+    background: {ACCENT_BLUE_DARK};
+}}
+QPushButton#PrimaryButton:pressed {{
+    background: {ACCENT_BLUE_DARK};
+}}
 QComboBox, QLineEdit, QSpinBox {{
     background: #FFFFFF;
     border: 1px solid {BORDER_SUBTLE};
     border-radius: 6px;
-    padding: 3px 6px;
+    padding: 4px 8px;
 }}
 QComboBox:focus, QLineEdit:focus, QSpinBox:focus {{
     border-color: {ACCENT_BLUE};
 }}
+QLineEdit:read-only {{
+    background: {CONTENT_BG};
+    color: {TEXT_MUTED};
+}}
 """
+
+
+def card_shadow():
+    """A subtle drop shadow for QGroupBox cards, giving them real
+    elevation off the page canvas instead of just a flat outline. Call
+    per-instance: box.setGraphicsEffect(card_shadow())."""
+    from PySide6.QtWidgets import QGraphicsDropShadowEffect
+    from PySide6.QtGui import QColor
+
+    effect = QGraphicsDropShadowEffect()
+    effect.setBlurRadius(18)
+    effect.setOffset(0, 3)
+    effect.setColor(QColor(17, 24, 39, 30))  # TEXT_DARK at low alpha
+    return effect
 
 
 def light_palette():

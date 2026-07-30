@@ -1,7 +1,9 @@
-from PySide6.QtWidgets import QHBoxLayout, QGroupBox, QVBoxLayout, QSizePolicy
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QSizePolicy
+from PySide6.QtCore import Qt
 
-from ui.base_page import BasePage
-from ui.widgets import ActivityChart, HexLineDisplay
+from ui.base_page import BasePage, CONTENT_SPACING
+from ui.widgets import ActivityChart, HexLineDisplay, make_card
+from ui.theme_colors import card_shadow
 
 
 class CommunicationPage(BasePage):
@@ -11,18 +13,21 @@ class CommunicationPage(BasePage):
         layout = self.content_layout
 
         self.chart = ActivityChart()
+        self.chart.setAttribute(Qt.WA_StyledBackground, True)
+        self.chart.setGraphicsEffect(card_shadow())
         layout.addWidget(self.chart, 7)
 
         boxes_row = QHBoxLayout()
+        boxes_row.setSpacing(CONTENT_SPACING)
 
-        tx_box = QGroupBox("Data Sending")
+        tx_box = make_card("Data Sending")
         tx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         tx_layout = QVBoxLayout(tx_box)
         self.tx_display = HexLineDisplay()
         tx_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
-        rx_box = QGroupBox("Data Receiving")
+        rx_box = make_card("Data Receiving")
         rx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         rx_layout = QVBoxLayout(rx_box)
         self.rx_display = HexLineDisplay()
