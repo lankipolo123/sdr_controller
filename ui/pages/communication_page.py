@@ -3,7 +3,7 @@ from PySide6.QtCore import Qt
 
 from ui.base_page import BasePage, CONTENT_SPACING
 from ui.widgets import ActivityChart, HexLineDisplay, make_card
-from ui.theme_colors import card_shadow, TX_ACCENT, RX_ACCENT
+from ui.theme_colors import TX_ACCENT, RX_ACCENT
 
 
 class CommunicationPage(BasePage):
@@ -14,7 +14,6 @@ class CommunicationPage(BasePage):
 
         self.chart = ActivityChart()
         self.chart.setAttribute(Qt.WA_StyledBackground, True)
-        self.chart.setGraphicsEffect(card_shadow())
         layout.addWidget(self.chart, 7)
 
         boxes_row = QHBoxLayout()

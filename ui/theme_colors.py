@@ -27,6 +27,9 @@ SIDEBAR_SELECTED_TEXT = "#1F2937"  # text for the selected sidebar row, which si
 STATUS_OK = "#087F23"
 STATUS_ERROR = "#B00020"
 STATUS_ERROR_DARK = "#8A0018"  # hover/pressed shade for red danger actions
+STATUS_ERROR_LIGHT = "#F87171"  # lighter red for icons/accents on dark
+                                 # surfaces (e.g. navy header) — STATUS_ERROR
+                                 # is too dark to read clearly against navy
 WARNING_BG = "#FEF3C7"
 WARNING_BORDER = "#F59E0B"
 WARNING_TEXT = "#92400E"

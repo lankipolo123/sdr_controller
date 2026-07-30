@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QApplica
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
 
-from ..theme_colors import card_shadow, TEXT_DARK, BORDER_SUBTLE, ACCENT_BLUE
+from ..theme_colors import TEXT_DARK, BORDER_SUBTLE, ACCENT_BLUE
 from .icon_utils import tint_pixmap
 
 _ICON_SIZE = 15
@@ -58,7 +58,6 @@ class Card(QFrame):
             f"#Card {{ background: #FFFFFF; border: 1px solid {BORDER_SUBTLE}; "
             f"border-radius: 10px; }}"
         )
-        self.setGraphicsEffect(card_shadow())
 
         outer = QVBoxLayout(self)
         outer.setContentsMargins(14, 10, 14, 10)

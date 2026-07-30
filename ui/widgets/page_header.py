@@ -18,7 +18,7 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import Qt, Signal, QSize
 
-from ..theme_colors import NAVY, TEXT_LIGHT, BORDER_SUBTLE_DARK, STATUS_ERROR
+from ..theme_colors import NAVY, TEXT_LIGHT, BORDER_SUBTLE_DARK, STATUS_ERROR_LIGHT
 from .icon_utils import tint_pixmap
 
 _ICON_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons", "pages")
@@ -83,15 +83,15 @@ class PageHeader(QWidget):
                 QPixmap(close_icon_path).scaled(
                     CLOSE_ICON_SIZE, CLOSE_ICON_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation
                 ),
-                STATUS_ERROR,
+                STATUS_ERROR_LIGHT,
             )
             self.close_btn.setIcon(QIcon(red_icon))
             self.close_btn.setIconSize(QSize(CLOSE_ICON_SIZE, CLOSE_ICON_SIZE))
         self.close_btn.setStyleSheet(
             f"QPushButton {{ background: transparent; border: none; "
             f"border-radius: {CLOSE_BTN_SIZE // 2}px; }}"
-            f"QPushButton:hover {{ background: rgba(176, 0, 32, 30); }}"
-            f"QPushButton:pressed {{ background: rgba(176, 0, 32, 60); }}"
+            f"QPushButton:hover {{ background: rgba(248, 113, 113, 30); }}"
+            f"QPushButton:pressed {{ background: rgba(248, 113, 113, 60); }}"
         )
         self.close_btn.clicked.connect(self.close_requested.emit)
         layout.addWidget(self.close_btn)
