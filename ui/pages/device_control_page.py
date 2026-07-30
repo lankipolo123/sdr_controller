@@ -1,12 +1,14 @@
 from PySide6.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QGroupBox,
+    QHBoxLayout, QLabel, QPushButton, QStyle,
     QRadioButton, QButtonGroup, QComboBox, QMessageBox,
     QFormLayout, QSpinBox, QCheckBox, QLineEdit
 )
+from PySide6.QtCore import Qt
 
-from ui.base_page import BasePage
-from ui.widgets import FrequencyWidget, ToggleSwitch
+from ui.base_page import BasePage, CONTENT_SPACING
+from ui.widgets import FrequencyWidget, ToggleSwitch, make_card
 from ui.widgets.confirm_dialog import ConfirmDialog
+from ui.theme_colors import RADIO_BUTTON_STYLE, STATUS_OK, TEXT_MUTED, NEUTRAL_TRACK
 from serial_io import list_com_ports
 from protocol import constants as c
 from protocol.packet_builder import ProtocolError
@@ -33,9 +35,10 @@ class DeviceControlPage(BasePage):
         layout = self.content_layout
 
         # Connection & app settings
-        settings_box = QGroupBox("Connection & App Settings")
-        settings_box_layout = QVBoxLayout(settings_box)
+        settings_box = make_card("Connection & App Settings", icon=QStyle.SP_ComputerIcon)
+        settings_box_layout = settings_box.body_layout
         form = QFormLayout()
+        form.setVerticalSpacing(6)
 
         self.port_combo = QComboBox()
         self.port_combo.addItems(list_com_ports())
@@ -76,6 +79,7 @@ class DeviceControlPage(BasePage):
         self.query_addr_btn.clicked.connect(self.app.device.query_address)
         address_row.addWidget(self.query_addr_btn)
         self.set_addr_btn = QPushButton("Set")
+        self.set_addr_btn.setObjectName("PrimaryButton")
         self.set_addr_btn.clicked.connect(self._on_set_address)
         address_row.addWidget(self.set_addr_btn)
         form.addRow("Module Address:", address_row)
@@ -90,25 +94,33 @@ class DeviceControlPage(BasePage):
         settings_box_layout.addLayout(form)
 
         save_btn = QPushButton("Save Configuration")
+        save_btn.setObjectName("PrimaryButton")
         save_btn.clicked.connect(self._on_save)
         settings_box_layout.addWidget(save_btn)
 
         layout.addWidget(settings_box)
 
-        # Output controls
-        output_box = QGroupBox("Output")
-        output_row = QHBoxLayout(output_box)
+        # Output controls — a status pill next to the switch instead of a
+        # plain static label, so the card's own color communicates state
+        # at a glance instead of relying on the toggle's position alone.
+        output_box = make_card("Output", icon="logout.png")
+        output_row = QHBoxLayout()
+        output_box.body_layout.addLayout(output_row)
         self.output_toggle = ToggleSwitch()
         self.output_toggle.toggled.connect(self._on_output_toggled)
-        output_label = QLabel("Output ON/OFF")
         output_row.addWidget(self.output_toggle)
-        output_row.addWidget(output_label)
+
+        self.output_status_pill = QLabel("OFF")
+        self.output_status_pill.setAlignment(Qt.AlignCenter)
+        self.output_status_pill.setFixedWidth(56)
+        self._style_output_pill(False)
+        output_row.addWidget(self.output_status_pill)
         output_row.addStretch()
         layout.addWidget(output_box)
 
         # Signal settings
-        signal_box = QGroupBox("Signal Settings")
-        signal_layout = QVBoxLayout(signal_box)
+        signal_box = make_card("Signal Settings", icon=QStyle.SP_MediaVolume)
+        signal_layout = signal_box.body_layout
 
         mode_row = QHBoxLayout()
         mode_row.addWidget(QLabel("Mode:"))
@@ -119,6 +131,7 @@ class DeviceControlPage(BasePage):
         self.rb_single = QRadioButton("Single (unconfirmed)")
         self.rb_white.setChecked(True)
         for i, rb in enumerate([self.rb_white, self.rb_sweep, self.rb_comb, self.rb_single]):
+            rb.setStyleSheet(RADIO_BUTTON_STYLE)
             self.mode_group.addButton(rb, i)
             mode_row.addWidget(rb)
         mode_row.addStretch()
@@ -149,6 +162,7 @@ class DeviceControlPage(BasePage):
 
         btn_row = QHBoxLayout()
         self.apply_btn = QPushButton("Apply")
+        self.apply_btn.setObjectName("PrimaryButton")
         self.read_btn = QPushButton("Read Device")
         self.apply_btn.clicked.connect(self._on_apply)
         self.read_btn.clicked.connect(self.app.device.read_device)
@@ -201,10 +215,20 @@ class DeviceControlPage(BasePage):
             QMessageBox.warning(self, "Invalid settings", str(e))
 
     def _on_output_toggled(self, checked: bool):
+        self._style_output_pill(checked)
         if checked:
             self.app.device.turn_output_on()
         else:
             self.app.device.turn_output_off()
+
+    def _style_output_pill(self, is_on: bool):
+        self.output_status_pill.setText("ON" if is_on else "OFF")
+        bg = STATUS_OK if is_on else NEUTRAL_TRACK
+        color = "#FFFFFF" if is_on else TEXT_MUTED
+        self.output_status_pill.setStyleSheet(
+            f"background: {bg}; color: {color}; font-weight: 700; "
+            f"font-size: 11px; border-radius: 9px; padding: 3px 0;"
+        )
 
     def _on_save(self):
         config = self.app.config

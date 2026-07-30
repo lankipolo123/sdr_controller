@@ -1,6 +1,8 @@
 from PySide6.QtCharts import QChart, QChartView, QLineSeries, QValueAxis
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPainter
+from PySide6.QtGui import QPainter, QColor, QPen
+
+from ..theme_colors import TX_ACCENT, RX_ACCENT
 
 
 class ActivityChart(QChartView):
@@ -13,8 +15,10 @@ class ActivityChart(QChartView):
 
         self.tx_series = QLineSeries()
         self.tx_series.setName("TX")
+        self.tx_series.setPen(QPen(QColor(TX_ACCENT), 2))
         self.rx_series = QLineSeries()
         self.rx_series.setName("RX")
+        self.rx_series.setPen(QPen(QColor(RX_ACCENT), 2))
         chart.addSeries(self.tx_series)
         chart.addSeries(self.rx_series)
 

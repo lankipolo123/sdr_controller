@@ -11,9 +11,9 @@ zero margins so the header genuinely touches the top/left/right edges
 of the page area, and a separate inner `content_layout` (with its own
 padding) is where each page adds its real widgets.
 
-Also owns the header's Logout button behavior, since PageHeader itself
-has no knowledge of the app/connection — logging out here means
-disconnecting the device (if connected) and closing the app, after a
+Also owns the header's Close Application button behavior, since PageHeader
+itself has no knowledge of the app/connection — closing here means
+disconnecting the device (if connected) and quitting the app, after a
 confirmation so a stray click doesn't kill an active bench test.
 """
 
@@ -21,7 +21,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QApplication
 
 from ui.widgets import PageHeader, ConfirmDialog
 
-CONTENT_MARGIN = 20
+CONTENT_MARGIN = 16
+CONTENT_SPACING = 12
 
 
 class BasePage(QWidget):
@@ -34,7 +35,7 @@ class BasePage(QWidget):
         outer.setSpacing(0)
 
         self.header = PageHeader(title, icon_key)
-        self.header.logout_requested.connect(self._on_logout_requested)
+        self.header.close_requested.connect(self._on_close_requested)
         outer.addWidget(self.header)
 
         content = QWidget()
@@ -42,14 +43,15 @@ class BasePage(QWidget):
         self.content_layout.setContentsMargins(
             CONTENT_MARGIN, CONTENT_MARGIN, CONTENT_MARGIN, CONTENT_MARGIN
         )
+        self.content_layout.setSpacing(CONTENT_SPACING)
         outer.addWidget(content)
 
-    def _on_logout_requested(self):
+    def _on_close_requested(self):
         confirmed = ConfirmDialog.ask(
             self,
-            "Log out",
+            "Close Application",
             "Disconnect from the device and close the app?",
-            confirm_text="Logout",
+            confirm_text="Close",
             cancel_text="Cancel",
             danger=True,
         )

@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QCheckBox
 from PySide6.QtCore import Qt, QRectF
 from PySide6.QtGui import QPainter, QColor
 
-from ..theme_colors import ACCENT_BLUE, BORDER_SUBTLE
+from ..theme_colors import ACCENT_BLUE, NEUTRAL_TRACK
 
 WIDTH = 52
 HEIGHT = 28
@@ -30,7 +30,7 @@ class ToggleSwitch(QCheckBox):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
-        track_color = QColor(ACCENT_BLUE) if self.isChecked() else QColor(BORDER_SUBTLE)
+        track_color = QColor(ACCENT_BLUE) if self.isChecked() else QColor(NEUTRAL_TRACK)
         painter.setPen(Qt.NoPen)
         painter.setBrush(track_color)
         radius = HEIGHT / 2

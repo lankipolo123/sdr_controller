@@ -1,7 +1,8 @@
-from PySide6.QtWidgets import QGridLayout, QLabel, QGroupBox, QVBoxLayout, QHBoxLayout, QSizePolicy
+from PySide6.QtWidgets import QGridLayout, QLabel, QHBoxLayout, QSizePolicy, QStyle
 
-from ui.base_page import BasePage
-from ui.widgets import ConnectionWidget, HexLineDisplay
+from ui.base_page import BasePage, CONTENT_SPACING
+from ui.widgets import ConnectionWidget, HexLineDisplay, make_card
+from ui.theme_colors import TEXT_DARK, TEXT_MUTED, ACCENT_BLUE, TX_ACCENT, RX_ACCENT
 from protocol import constants as c
 
 
@@ -14,18 +15,21 @@ class DashboardPage(BasePage):
 
         layout = self.content_layout
 
-        layout.addWidget(ConnectionWidget(self.app.connection, self.app.config))
+        connection_row = ConnectionWidget(self.app.connection, self.app.config)
+        connection_row.connect_btn.setObjectName("PrimaryButton")
+        layout.addWidget(connection_row)
 
         self.warning_label = QLabel("")
         self.warning_label.setStyleSheet(
             "color: #92400e; background: #fef3c7; border: 1px solid #f59e0b; "
-            "border-radius: 6px; padding: 8px; font-weight: 600;"
+            "border-radius: 6px; padding: 6px 8px; font-weight: 600;"
         )
         self.warning_label.setVisible(False)
         self.warning_label.setWordWrap(True)
         layout.addWidget(self.warning_label)
 
         grid = QGridLayout()
+        grid.setSpacing(CONTENT_SPACING)
         self.card_connection, self.value_connection = self._make_status_card("Connection")
         self.card_output, self.value_output = self._make_status_card("Output State")
         self.card_frequency, self.value_frequency = self._make_status_card("Frequency")
@@ -40,22 +44,24 @@ class DashboardPage(BasePage):
         layout.addLayout(grid)
 
         self.last_command_label = QLabel("Last Command: —")
+        self.last_command_label.setStyleSheet(
+            f"color: {TEXT_MUTED}; font-size: 12px; background: transparent;"
+        )
         layout.addWidget(self.last_command_label)
 
         boxes_row = QHBoxLayout()
+        boxes_row.setSpacing(CONTENT_SPACING)
 
-        tx_box = QGroupBox("Data Sending")
+        tx_box = make_card("Data Sending", icon=QStyle.SP_ArrowUp, accent=TX_ACCENT)
         tx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        tx_layout = QVBoxLayout(tx_box)
         self.tx_display = HexLineDisplay()
-        tx_layout.addWidget(self.tx_display)
+        tx_box.body_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
-        rx_box = QGroupBox("Data Receiving")
+        rx_box = make_card("Data Receiving", icon=QStyle.SP_ArrowDown, accent=RX_ACCENT)
         rx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        rx_layout = QVBoxLayout(rx_box)
         self.rx_display = HexLineDisplay()
-        rx_layout.addWidget(self.rx_display)
+        rx_box.body_layout.addWidget(self.rx_display)
         boxes_row.addWidget(rx_box)
 
         layout.addLayout(boxes_row)
@@ -67,18 +73,29 @@ class DashboardPage(BasePage):
         self._refresh()
 
     def _make_status_card(self, title: str):
-        """Plain QGroupBox, same as Output/Signal Settings on Device
-        Control — no separate custom card design."""
-        box = QGroupBox(title)
-        box_layout = QVBoxLayout(box)
+        """Card styled as a compact stat tile: a small muted header above
+        one large, bold value — not just a plain box with same-size text
+        throughout."""
+        box = make_card(title)
         value_label = QLabel("—")
-        box_layout.addWidget(value_label)
+        value_label.setStyleSheet(
+            f"color: {TEXT_DARK}; font-size: 17px; font-weight: 700; background: transparent;"
+        )
+        box.body_layout.addWidget(value_label)
         return box, value_label
 
     def _refresh(self):
         d = self.app.device_state.data
         self.value_connection.setText("Connected" if d.connected else "Disconnected")
+        self.value_connection.setStyleSheet(
+            f"color: {'#087F23' if d.connected else '#B00020'}; "
+            f"font-size: 17px; font-weight: 700; background: transparent;"
+        )
         self.value_output.setText("ON" if d.output_on else "OFF")
+        self.value_output.setStyleSheet(
+            f"color: {ACCENT_BLUE if d.output_on else TEXT_MUTED}; "
+            f"font-size: 17px; font-weight: 700; background: transparent;"
+        )
         self.value_frequency.setText(f"{d.frequency_mhz} MHz" if d.frequency_mhz else "—")
         self.value_bandwidth.setText(f"{d.bandwidth_mhz} MHz" if d.bandwidth_mhz else "—")
         self.value_power.setText(f"{d.power_db} dB" if d.power_db is not None else "—")

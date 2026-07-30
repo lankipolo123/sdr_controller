@@ -8,3 +8,4 @@ from .toggle_switch import ToggleSwitch
 from .section_card import SectionCard
 from .activity_chart import ActivityChart
 from .hex_line_display import HexLineDisplay
+from .card import make_card

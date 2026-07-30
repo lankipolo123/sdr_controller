@@ -33,7 +33,9 @@ class SplashScreen(QWidget):
         )
         self.setFixedSize(440, 300)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        self.setStyleSheet(f"background-color: {colors.NAVY};")
+        self.setStyleSheet(
+            f"background-color: {colors.SURFACE}; border: 1px solid {colors.BORDER_SUBTLE};"
+        )
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(40, 40, 40, 32)
@@ -54,7 +56,7 @@ class SplashScreen(QWidget):
         title_label = QLabel(APP_NAME)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setStyleSheet(
-            f"color: {colors.TEXT_LIGHT}; font-size: 15px; font-weight: 600; background: transparent;"
+            f"color: {colors.TEXT_DARK}; font-size: 15px; font-weight: 600; background: transparent;"
         )
         layout.addWidget(title_label)
 

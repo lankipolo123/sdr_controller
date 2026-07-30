@@ -1,12 +1,12 @@
 """
 Reusable themed confirmation dialog — replaces the default OS QMessageBox
-(which looked completely out of place against the app's navy/accent
-theme) with a clean, frameless, rounded panel matching the rest of the UI.
+(which looked out of place against the app's theme) with a clean,
+frameless, rounded panel matching the rest of the UI.
 
 Usage:
-    if ConfirmDialog.ask(self, "Log out",
+    if ConfirmDialog.ask(self, "Close Application",
                           "This will disconnect and close the app.",
-                          confirm_text="Logout", danger=True):
+                          confirm_text="Close", danger=True):
         ...
 """
 
@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor
 
-from ..theme_colors import DIALOG_BG, TEXT_LIGHT, TEXT_MUTED, ACCENT_BLUE, STATUS_ERROR, BORDER_SUBTLE
+from ..theme_colors import DIALOG_BG, TEXT_DARK, TEXT_MUTED, ACCENT_BLUE, STATUS_ERROR, BORDER_SUBTLE
 
 
 class ConfirmDialog(QDialog):
@@ -59,7 +59,7 @@ class ConfirmDialog(QDialog):
 
         title_label = QLabel(title)
         title_label.setStyleSheet(
-            f"color: {TEXT_LIGHT}; font-size: 17px; font-weight: 700; background: transparent;"
+            f"color: {TEXT_DARK}; font-size: 17px; font-weight: 700; background: transparent;"
         )
         panel_layout.addWidget(title_label)
 
@@ -78,9 +78,9 @@ class ConfirmDialog(QDialog):
         cancel_btn.setCursor(Qt.PointingHandCursor)
         cancel_btn.setMinimumSize(90, 32)
         cancel_btn.setStyleSheet(
-            f"QPushButton {{ background: transparent; color: {TEXT_LIGHT}; "
+            f"QPushButton {{ background: transparent; color: {TEXT_DARK}; "
             f"border: 1px solid {BORDER_SUBTLE}; border-radius: 4px; padding: 6px 16px; }}"
-            f"QPushButton:hover {{ border-color: {TEXT_LIGHT}; }}"
+            f"QPushButton:hover {{ border-color: {TEXT_DARK}; }}"
         )
         cancel_btn.clicked.connect(self.reject)
         btn_row.addWidget(cancel_btn)
