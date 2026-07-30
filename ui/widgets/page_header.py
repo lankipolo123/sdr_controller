@@ -1,6 +1,6 @@
 """
 Reusable page header. Spans the full width of the page (BasePage gives it
-a zero-margin outer layout to make this true) — same navy background as
+a zero-margin outer layout to make this true) — same white background as
 the sidebar, with a thin bottom divider. Height matches the sidebar's
 active row height (50px, confirmed via Sidebar.visualItemRect) so the
 header lines up visually with the sidebar rather than having an
@@ -16,7 +16,7 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtCore import Qt, Signal, QSize
 
-from ..theme_colors import NAVY, ACCENT_BLUE, TEXT_LIGHT, BORDER_SUBTLE, STATUS_ERROR, STATUS_ERROR_DARK
+from ..theme_colors import SURFACE, ACCENT_BLUE, TEXT_DARK, BORDER_SUBTLE, STATUS_ERROR, STATUS_ERROR_DARK
 
 _ICON_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons", "pages")
 
@@ -46,7 +46,7 @@ class PageHeader(QWidget):
 
         self.setObjectName("PageHeader")
         self.setStyleSheet(
-            f"#PageHeader {{ background: {NAVY}; "
+            f"#PageHeader {{ background: {SURFACE}; "
             f"border-bottom: 1px solid {BORDER_SUBTLE}; }}"
         )
         self.setFixedHeight(DEFAULT_HEIGHT)
@@ -67,7 +67,7 @@ class PageHeader(QWidget):
 
         title_label = QLabel(title)
         title_label.setStyleSheet(
-            f"color: {TEXT_LIGHT}; font-size: 17px; font-weight: 700; background: transparent;"
+            f"color: {TEXT_DARK}; font-size: 17px; font-weight: 700; background: transparent;"
         )
         layout.addWidget(title_label)
         layout.addStretch()

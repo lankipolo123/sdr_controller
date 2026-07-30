@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QSpinBox, QComboBox, QPushButton
 
 from protocol import constants as c
-from ..theme_colors import TEXT_LIGHT
+from ..theme_colors import TEXT_DARK
 
 STEP_OPTIONS_MHZ = [1, 10, 50, 100]
 
@@ -12,7 +12,7 @@ class FrequencyWidget(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         label = QLabel("Center Frequency:")
-        label.setStyleSheet(f"color: {TEXT_LIGHT}; background: transparent;")
+        label.setStyleSheet(f"color: {TEXT_DARK}; background: transparent;")
         layout.addWidget(label)
         self.spin = QSpinBox()
         self.spin.setRange(c.FREQ_MIN_MHZ, c.FREQ_MAX_MHZ)
@@ -31,7 +31,7 @@ class FrequencyWidget(QWidget):
         layout.addWidget(self.plus_btn)
 
         step_label = QLabel("Step:")
-        step_label.setStyleSheet(f"color: {TEXT_LIGHT}; background: transparent;")
+        step_label.setStyleSheet(f"color: {TEXT_DARK}; background: transparent;")
         layout.addWidget(step_label)
         self.step_combo = QComboBox()
         for mhz in STEP_OPTIONS_MHZ:

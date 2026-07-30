@@ -6,12 +6,15 @@ from PySide6.QtGui import QIcon
 from controller import AppController
 from ui.main_window import MainWindow
 from ui.splash_screen import SplashScreen
+from ui.theme_colors import light_palette
 
 ICON_PATH = os.path.join(os.path.dirname(__file__), "assets", "icons", "app_icon.png")
 
 
 def run():
     qt_app = QApplication(sys.argv)
+    qt_app.setStyle("Fusion")
+    qt_app.setPalette(light_palette())
     if os.path.exists(ICON_PATH):
         qt_app.setWindowIcon(QIcon(ICON_PATH))
 

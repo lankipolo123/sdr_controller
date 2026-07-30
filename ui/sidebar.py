@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QListWidget, QListWidgetItem
 from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QIcon
 
-from .theme_colors import NAVY, ACCENT_BLUE, TEXT_LIGHT, BORDER_SUBTLE
+from .theme_colors import SURFACE, ACCENT_BLUE, TEXT_DARK, SIDEBAR_SELECTED_TEXT, BORDER_SUBTLE
 
 PAGES = ["Dashboard", "Device Control", "Communication"]
 
@@ -43,10 +43,10 @@ class Sidebar(QListWidget):
         self.setFocusPolicy(Qt.NoFocus)  # stops Qt drawing a focus box around the selected item
         self.setIconSize(QSize(20, 20))
         self.setStyleSheet(
-            f"QListWidget {{ background: {NAVY}; color: {TEXT_LIGHT}; border: none; "
+            f"QListWidget {{ background: {SURFACE}; color: {TEXT_DARK}; border: none; "
             f"border-right: 1px solid {BORDER_SUBTLE}; font-size: 14px; outline: 0; }}"
             f"QListWidget::item {{ padding: 14px 16px; border: none; outline: 0; }}"
-            f"QListWidget::item:selected {{ background: {ACCENT_BLUE}; color: {NAVY}; font-weight: 700; border: none; outline: 0; }}"
+            f"QListWidget::item:selected {{ background: {ACCENT_BLUE}; color: {SIDEBAR_SELECTED_TEXT}; font-weight: 700; border: none; outline: 0; }}"
             f"QListWidget::item:focus {{ border: none; outline: 0; }}"
         )
         for name in PAGES:
