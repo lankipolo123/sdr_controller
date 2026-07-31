@@ -1,36 +1,32 @@
-import os
 from PySide6.QtWidgets import QListWidget, QListWidgetItem
 from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QIcon
 
 from .theme_colors import NAVY, ACCENT_BLUE, TEXT_LIGHT, SIDEBAR_SELECTED_TEXT, BORDER_SUBTLE_DARK
+from .widgets.icon_utils import nav_icon_pixmap
 
 PAGES = ["Dashboard", "Device Control", "Communication"]
 
-_ICON_DIR = os.path.join(os.path.dirname(__file__), "..", "assets", "icons", "pages")
-_ICON_DIR_DARK = os.path.join(os.path.dirname(__file__), "..", "assets", "icons", "pages_dark")
-_ICON_FILES = {
-    "Dashboard": "dashboard.png",
-    "Device Control": "device_control.png",
-    "Communication": "communication.png",
+_ICON_KEYS = {
+    "Dashboard": "dashboard",
+    "Device Control": "device_control",
+    "Communication": "communication",
 }
 
+_ICON_SIZE = 20
 
-def _build_icon(filename: str) -> QIcon:
+
+def _build_icon(icon_key: str) -> QIcon:
     """
-    Blue icon for the normal (unselected) state, dark navy icon for the
-    Selected state — the row's background flips to accent-blue when
-    selected, so the icon needs to flip to dark too, or it just blends
-    into the highlight and disappears.
+    Same Qt standard-icon set used everywhere else in the app (cards,
+    page headers), tinted blue for the normal (unselected) state and
+    dark for the Selected state — the row's background flips to
+    accent-blue when selected, so the icon needs to flip to dark too, or
+    it just blends into the highlight and disappears.
     """
     icon = QIcon()
-    normal_path = os.path.join(_ICON_DIR, filename)
-    selected_path = os.path.join(_ICON_DIR_DARK, filename)
-    size = QSize(64, 64)
-    if os.path.exists(normal_path):
-        icon.addFile(normal_path, size, QIcon.Normal, QIcon.Off)
-    if os.path.exists(selected_path):
-        icon.addFile(selected_path, size, QIcon.Selected, QIcon.Off)
+    icon.addPixmap(nav_icon_pixmap(icon_key, _ICON_SIZE, ACCENT_BLUE), QIcon.Normal, QIcon.Off)
+    icon.addPixmap(nav_icon_pixmap(icon_key, _ICON_SIZE, SIDEBAR_SELECTED_TEXT), QIcon.Selected, QIcon.Off)
     return icon
 
 
@@ -41,7 +37,7 @@ class Sidebar(QListWidget):
         super().__init__(parent)
         self.setFixedWidth(180)
         self.setFocusPolicy(Qt.NoFocus)  # stops Qt drawing a focus box around the selected item
-        self.setIconSize(QSize(20, 20))
+        self.setIconSize(QSize(_ICON_SIZE, _ICON_SIZE))
         self.setStyleSheet(
             f"QListWidget {{ background: {NAVY}; color: {TEXT_LIGHT}; border: none; "
             f"border-right: 1px solid {BORDER_SUBTLE_DARK}; font-size: 14px; outline: 0; }}"
@@ -51,7 +47,7 @@ class Sidebar(QListWidget):
         )
         for name in PAGES:
             item = QListWidgetItem(name)
-            item.setIcon(_build_icon(_ICON_FILES[name]))
+            item.setIcon(_build_icon(_ICON_KEYS[name]))
             self.addItem(item)
         self.setCurrentRow(0)
         self.currentTextChanged.connect(self.page_selected.emit)
