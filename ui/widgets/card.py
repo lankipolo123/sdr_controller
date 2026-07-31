@@ -53,7 +53,7 @@ class Card(QFrame):
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setObjectName("Card")
         self.setStyleSheet(
-            f"#Card {{ background: #FFFFFF; border: 1px solid {BORDER_SUBTLE}; "
+            f"#Card {{ background: #FFFFFF; border: 2px solid {BORDER_SUBTLE}; "
             f"border-radius: 10px; }}"
         )
 
