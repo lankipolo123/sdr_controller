@@ -133,7 +133,7 @@ def build_global_qss() -> str:
     return f"""
 QChartView {{
     background: #FFFFFF;
-    border: 1px solid {BORDER_SUBTLE};
+    border: 2px solid {BORDER_SUBTLE};
     border-radius: 8px;
 }}
 QPushButton {{
@@ -236,7 +236,7 @@ def light_palette():
     from PySide6.QtGui import QPalette, QColor
 
     p = QPalette()
-    p.setColor(QPalette.Window, QColor(CONTENT_BG))
+    p.setColor(QPalette.Window, QColor("#FFFFFF"))
     p.setColor(QPalette.WindowText, QColor(TEXT_DARK))
     p.setColor(QPalette.Base, QColor("#FFFFFF"))
     p.setColor(QPalette.AlternateBase, QColor(CONTENT_BG))

@@ -1,7 +1,9 @@
 from PySide6.QtWidgets import QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QStackedWidget
+from PySide6.QtCore import Qt
 
 from .sidebar import Sidebar, PAGES
-from .widgets import SidebarHeader
+from .widgets import SidebarHeader, EmergencyStopButton, ConfirmDialog
+from .theme_colors import NAVY, BORDER_SUBTLE_DARK
 from .pages import DashboardPage, DeviceControlPage, CommunicationPage
 
 
@@ -28,6 +30,20 @@ class MainWindow(QMainWindow):
 
         self.sidebar = Sidebar()
         sidebar_layout.addWidget(self.sidebar)
+
+        stop_footer = QWidget()
+        stop_footer.setAttribute(Qt.WA_StyledBackground, True)
+        stop_footer.setObjectName("SidebarFooter")
+        stop_footer.setStyleSheet(
+            f"#SidebarFooter {{ background: {NAVY}; "
+            f"border-top: 1px solid {BORDER_SUBTLE_DARK}; border-right: 1px solid {BORDER_SUBTLE_DARK}; }}"
+        )
+        stop_footer_layout = QVBoxLayout(stop_footer)
+        stop_footer_layout.setContentsMargins(12, 12, 12, 12)
+        self.emergency_stop_btn = EmergencyStopButton()
+        self.emergency_stop_btn.clicked.connect(self._on_emergency_stop)
+        stop_footer_layout.addWidget(self.emergency_stop_btn)
+        sidebar_layout.addWidget(stop_footer)
 
         self.stack = QStackedWidget()
 
@@ -60,6 +76,19 @@ class MainWindow(QMainWindow):
 
     def _on_page_selected(self, name: str):
         self.stack.setCurrentWidget(self.pages[name])
+
+    def _on_emergency_stop(self):
+        confirmed = ConfirmDialog.ask(
+            self,
+            "Emergency Stop",
+            "Immediately turn off the device output?",
+            confirm_text="Turn Off",
+            cancel_text="Cancel",
+            danger=True,
+        )
+        if not confirmed:
+            return
+        self.app.device.turn_output_off()
 
     def closeEvent(self, event):
         self.app.shutdown()
