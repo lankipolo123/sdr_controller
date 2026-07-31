@@ -8,9 +8,6 @@ from ..theme_colors import TX_ACCENT, RX_ACCENT
 
 
 def _nice_tick_interval(span: float, target_ticks: int = 8) -> float:
-    """A tick step that lands on round numbers (1/2/5 x a power of ten) for
-    the given axis span - keeps QValueAxis' TicksDynamic mode from picking
-    a step like 0.25 that renders as duplicate "0" labels with %d format."""
     if span <= 0:
         return 1
     raw_step = span / target_ticks
@@ -23,8 +20,6 @@ def _nice_tick_interval(span: float, target_ticks: int = 8) -> float:
 
 
 class ActivityChart(QChartView):
-    """Live line graph of bytes-per-message for TX/RX, one point per event."""
-
     def __init__(self, parent=None):
         chart = QChart()
         chart.setTitle("Communication Activity (bytes per message)")

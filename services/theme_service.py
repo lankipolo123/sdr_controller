@@ -1,9 +1,3 @@
-"""
-Applies a real light/dark palette to the whole application.
-Uses Qt's Fusion style, which (unlike native styles) actually respects
-QPalette changes consistently across every standard widget.
-"""
-
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QPalette, QColor
 from PySide6.QtCore import Qt

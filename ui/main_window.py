@@ -64,12 +64,6 @@ class MainWindow(QMainWindow):
         self._sync_header_heights()
 
     def _sync_header_heights(self):
-        """
-        Page headers sit beside the sidebar's logo header (SidebarHeader),
-        not beside the nav list — so they need to match SidebarHeader's
-        height, not the nav row height, or the page header's bottom edge
-        (and its icon) sits above/below where the sidebar row icons start.
-        """
         header_height = self.sidebar_header.height()
         for page in self.pages.values():
             page.header.setFixedHeight(header_height)

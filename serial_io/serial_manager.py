@@ -1,18 +1,8 @@
-"""
-Owns the physical COM port. No threading, no business logic —
-just open/close/send/list, exactly per the architecture's
-"Serial Layer: no business logic exists here" rule.
-"""
-
 import serial
 import serial.tools.list_ports
 
 BAUD_RATE = 115200
 
-# Parity codes as used in config/UI ("N"/"O"/"E"/"M"/"S") mapped to pyserial
-# constants. UNCONFIRMED: only "N" (None) at 115200 baud has been verified
-# against real hardware — see PLANNING_v1.1_COMPARISON.md section 4. Other
-# entries exist so the option is wireable once/if confirmed.
 PARITY_MAP = {
     "N": serial.PARITY_NONE,
     "O": serial.PARITY_ODD,
@@ -21,9 +11,6 @@ PARITY_MAP = {
     "S": serial.PARITY_SPACE,
 }
 
-# Data bits as used in config/UI mapped to pyserial constants. Confirmed:
-# real vendor V1.1 software's "data bit" dropdown showed 8 in use — see
-# PLANNING_v1.1_COMPARISON.md section 4.
 DATA_BITS_MAP = {
     5: serial.FIVEBITS,
     6: serial.SIXBITS,

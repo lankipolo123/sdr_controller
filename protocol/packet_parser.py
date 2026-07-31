@@ -1,12 +1,3 @@
-"""
-Parses incoming byte frames from the digital noise modulator.
-
-Serial reads arrive in arbitrary chunks, so FrameParser buffers bytes and
-yields complete, validated frames as they become available. This means the
-GUI/serial layer just needs to feed raw bytes in as they arrive and pull
-out ParsedFrame objects — no manual buffer management needed elsewhere.
-"""
-
 import struct
 from dataclasses import dataclass, field
 from typing import Optional, List
@@ -22,7 +13,6 @@ class ParsedFrame:
     raw: bytes
 
     def describe(self) -> str:
-        """Human-readable interpretation of this frame, based on its type."""
         if self.type in (c.TYPE_OUTPUT_SWITCH, c.TYPE_SIGNAL_CONTROL) and len(self.buf) == 1:
             code = self.buf[0]
             if code == c.RESP_SUCCESS:
@@ -61,11 +51,6 @@ class FrameParseError(ValueError):
 
 
 class FrameParser:
-    """
-    Feed raw bytes in via .feed(data); get back any complete frames found.
-    Tolerant of leading junk/noise: it resyncs on the next 0x7E7E it finds.
-    """
-
     def __init__(self):
         self._buf = bytearray()
 
@@ -80,34 +65,28 @@ class FrameParser:
         return frames
 
     def _try_extract_one(self) -> Optional[ParsedFrame]:
-        # Resync: drop bytes until we find HEAD
         head_idx = self._buf.find(c.HEAD)
         if head_idx == -1:
-            # No header at all yet; keep only last byte in case it's a
-            # split header (0x7E arrived alone).
             if len(self._buf) > 1:
                 del self._buf[:-1]
             return None
         if head_idx > 0:
             del self._buf[:head_idx]
 
-        # Need at least Head+Type+Addr+BufLen = 5 bytes to know payload length
         if len(self._buf) < 5:
             return None
 
         type_byte = self._buf[2]
         addr = self._buf[3]
         buf_len = self._buf[4]
-        total_len = 5 + buf_len + 2  # + Stop
+        total_len = 5 + buf_len + 2
 
         if len(self._buf) < total_len:
-            return None  # wait for more data
+            return None
 
         candidate = bytes(self._buf[:total_len])
         stop = candidate[-2:]
         if stop != c.STOP:
-            # Not a valid frame at this position — drop just the HEAD bytes
-            # we matched and try to resync further into the buffer.
             del self._buf[:2]
             return None
 

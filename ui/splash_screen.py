@@ -1,11 +1,3 @@
-"""
-Splash screen shown while the app initializes.
-
-Reuses the existing app icon and theme_colors palette rather than
-introducing new colors — stays consistent with the rest of the app's
-plain, un-decorated visual style.
-"""
-
 import os
 
 from PySide6.QtCore import Qt
@@ -20,12 +12,6 @@ APP_NAME = "SDR Noise Modulator Controller"
 
 
 class SplashScreen(QWidget):
-    """
-    Frameless, always-on-top splash widget: centered icon, app name,
-    a status line, and a progress bar. Call set_progress() at each real
-    init step — the bar reflects actual startup work, not a fake timer.
-    """
-
     def __init__(self):
         super().__init__(
             None,
@@ -103,7 +89,6 @@ class SplashScreen(QWidget):
         self.move(x, y)
 
     def set_progress(self, percent: int, status: str):
-        """Update progress bar and status text, then force an immediate repaint."""
         self._progress_bar.setValue(percent)
         self._status_label.setText(status)
         self.repaint()

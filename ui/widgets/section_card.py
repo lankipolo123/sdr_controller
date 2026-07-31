@@ -1,18 +1,3 @@
-"""
-Reusable section container — replaces plain QGroupBox everywhere in the
-app. Native QGroupBox rendering (thin border, label overlapping the
-border) never matched the app's actual design language (dark surfaces,
-accent stripe, consistent typography) — it was just left as Qt's
-unstyled default. This gives every section the same dark card treatment
-as StatusCard/ConfirmDialog, so nothing in the app looks like an
-untouched default widget anymore.
-
-Usage:
-    section = SectionCard("Output")
-    section.body_layout.addWidget(my_widget)
-    page_layout.addWidget(section)
-"""
-
 from PySide6.QtWidgets import QFrame, QVBoxLayout, QLabel
 from PySide6.QtCore import Qt
 

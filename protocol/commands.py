@@ -1,9 +1,3 @@
-"""
-High-level, named command constructors on top of packet_builder.
-This is the layer the Device Controller calls — it never touches
-raw bytes or BufLen math directly.
-"""
-
 from . import packet_builder as pb
 from . import constants as c
 

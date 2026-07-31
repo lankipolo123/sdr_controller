@@ -1,18 +1,3 @@
-"""
-Reusable page header. Spans the full width of the page (BasePage gives it
-a zero-margin outer layout to make this true) — same navy background as
-the sidebar, with a thin bottom divider. Height matches the sidebar's
-active row height (50px, confirmed via Sidebar.visualItemRect) so the
-header lines up visually with the sidebar rather than having an
-arbitrary height of its own.
-
-Includes a Close Application button on the right — emits `close_requested`
-so whatever owns this header (BasePage) decides what closing actually
-means (this widget itself has no app/connection knowledge). It's a plain
-icon button, not a logout — this app has no accounts/sessions, so
-"logout" never described what it actually does.
-"""
-
 import os
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QPushButton
 from PySide6.QtGui import QIcon
@@ -26,7 +11,7 @@ _ICON_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icons
 ICON_SIZE = 20
 CLOSE_ICON_SIZE = 24
 CLOSE_BTN_SIZE = 40
-DEFAULT_HEIGHT = 50  # only used as a fallback if never synced to the real sidebar height
+DEFAULT_HEIGHT = 50
 
 
 class PageHeader(QWidget):
@@ -34,9 +19,6 @@ class PageHeader(QWidget):
 
     def __init__(self, title: str, icon_key: str, parent=None):
         super().__init__(parent)
-        # Plain QWidget subclasses don't paint stylesheet background/border
-        # by default — this attribute is required or the rule below does
-        # nothing (confirmed previously by rendering + pixel check).
         self.setAttribute(Qt.WA_StyledBackground, True)
 
         self.setObjectName("PageHeader")

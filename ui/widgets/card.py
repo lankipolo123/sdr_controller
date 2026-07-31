@@ -11,14 +11,6 @@ _ASSET_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "icon
 
 
 def _resolve_icon(icon, tint_color: str):
-    """`icon` is one of:
-    - a "fa5s.icon-name" string -> crisp vector icon via qtawesome (preferred:
-      renders at any size with no blur, and tints natively via `color`)
-    - any other string -> asset filename (e.g. "logout.png") from assets/icons/pages
-    - a QStyle.StandardPixmap enum -> OS-native icon (blurry when scaled/tinted;
-      only kept for back-compat, avoid for new icons)
-    Returns a tinted QPixmap, or None.
-    """
     if icon is None:
         return None
     if isinstance(icon, str) and icon.startswith(("fa5s.", "fa5b.", "fa5r.", "mdi.", "mdi6.")):
@@ -36,17 +28,6 @@ def _resolve_icon(icon, tint_color: str):
 
 
 class Card(QFrame):
-    """A real custom card — QFrame, not QGroupBox. Qt's native QGroupBox
-    always renders its title cut into the border line no matter what QSS
-    is layered on top, which never reads as an actual designed component.
-    This builds its own icon+title header row above a body area instead.
-
-    Usage:
-        card = Card("Output", icon=QStyle.SP_MediaVolume, accent=ACCENT_BLUE)
-        card.body_layout.addWidget(my_widget)
-        page_layout.addWidget(card)
-    """
-
     def __init__(self, title: str, icon=None, accent: str | None = None, parent=None):
         super().__init__(parent)
         accent = accent or ACCENT_BLUE

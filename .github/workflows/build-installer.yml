@@ -1,12 +1,5 @@
 name: Build Windows Installer
 
-# Builds the app with PyInstaller and wraps it into a Windows Setup.exe
-# with Inno Setup - both only make sense on a real Windows runner, since
-# PyInstaller doesn't cross-compile and Inno Setup is Windows-only.
-#
-# Push a tag like "v1.0.0" to build + attach the installer to a GitHub
-# Release automatically. Use "Run workflow" (workflow_dispatch) to build
-# a test installer without tagging a release.
 on:
   push:
     tags:

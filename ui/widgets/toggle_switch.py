@@ -1,10 +1,3 @@
-"""
-A real iOS-style toggle switch — replaces separate "Output ON"/"Output OFF"
-buttons with a single sliding switch. Built on QCheckBox so it keeps the
-standard checked/unchecked state and `toggled(bool)` signal for free;
-only the painting is custom.
-"""
-
 from PySide6.QtWidgets import QCheckBox
 from PySide6.QtCore import Qt, QRectF
 from PySide6.QtGui import QPainter, QColor
@@ -21,8 +14,6 @@ class ToggleSwitch(QCheckBox):
         super().__init__(parent)
         self.setCursor(Qt.PointingHandCursor)
         self.setFixedSize(WIDTH, HEIGHT)
-        # Suppress Qt's default checkbox indicator/text box entirely —
-        # this widget paints itself completely in paintEvent below.
         self.setStyleSheet("QCheckBox::indicator { width: 0px; height: 0px; }")
         self.setText("")
 

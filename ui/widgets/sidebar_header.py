@@ -12,10 +12,6 @@ HEIGHT = 56
 
 
 class SidebarHeader(QWidget):
-    """App logo + name, sitting above the page-selector list — gives the
-    sidebar a proper branded top instead of the nav items starting right
-    at the window edge."""
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(Qt.WA_StyledBackground, True)
