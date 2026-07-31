@@ -49,16 +49,14 @@ class MainWindow(QMainWindow):
 
     def _sync_header_heights(self):
         """
-        Header height was previously a hardcoded number measured once on
-        one machine — it drifted out of alignment with the sidebar on
-        machines where Qt computes row height differently (font
-        rendering, DPI, OS). Fix: read the sidebar's real, live row
-        height and apply it to every page's header directly, so they're
-        guaranteed to match regardless of platform.
+        Page headers sit beside the sidebar's logo header (SidebarHeader),
+        not beside the nav list — so they need to match SidebarHeader's
+        height, not the nav row height, or the page header's bottom edge
+        (and its icon) sits above/below where the sidebar row icons start.
         """
-        row_height = self.sidebar.row_height()
+        header_height = self.sidebar_header.height()
         for page in self.pages.values():
-            page.header.setFixedHeight(row_height)
+            page.header.setFixedHeight(header_height)
 
     def _on_page_selected(self, name: str):
         self.stack.setCurrentWidget(self.pages[name])
