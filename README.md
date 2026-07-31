@@ -3,11 +3,14 @@
 Desktop control application for the 300–6000 MHz digital noise modulator,
 over RS422 at 115200 baud.
 
+[![Download for Windows](https://img.shields.io/github/v/release/lankipolo123/sdr_controller?label=Download%20for%20Windows&style=for-the-badge)](../../releases/latest)
+
 ## Install (Windows)
 
-1. Go to the repo's [Releases](../../releases) page (or the **Actions** tab
-   → "Build Windows Installer" → a completed run's Artifacts, for a build
-   that isn't tagged as a release yet) and download `SDR_Controller_Setup.exe`.
+1. Click the download badge above (or go to the repo's [Releases](../../releases)
+   page, or the **Actions** tab → "Build Windows Installer" → a completed
+   run's Artifacts for a build that isn't tagged as a release yet) and
+   download `SDR_Controller_Setup.exe`.
 2. Double-click it and go through the installer — Start Menu shortcut,
    optional desktop shortcut, and an uninstaller are all set up for you.
 3. Launch it from the Start Menu like any other app.
