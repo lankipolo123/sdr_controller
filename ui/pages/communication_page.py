@@ -1,9 +1,9 @@
-from PySide6.QtWidgets import QHBoxLayout, QSizePolicy, QStyle
+from PySide6.QtWidgets import QHBoxLayout, QSizePolicy
 from PySide6.QtCore import Qt
 
 from ui.base_page import BasePage, CONTENT_SPACING
 from ui.widgets import ActivityChart, HexLineDisplay, TerminalWidget, make_card
-from ui.theme_colors import card_shadow, TX_ACCENT, RX_ACCENT
+from ui.theme_colors import TX_ACCENT, RX_ACCENT
 
 
 class CommunicationPage(BasePage):
@@ -14,19 +14,18 @@ class CommunicationPage(BasePage):
 
         self.chart = ActivityChart()
         self.chart.setAttribute(Qt.WA_StyledBackground, True)
-        self.chart.setGraphicsEffect(card_shadow())
         layout.addWidget(self.chart, 5)
 
         boxes_row = QHBoxLayout()
         boxes_row.setSpacing(CONTENT_SPACING)
 
-        tx_box = make_card("Data Sending", icon=QStyle.SP_ArrowUp, accent=TX_ACCENT)
+        tx_box = make_card("Data Sending", icon="fa5s.arrow-up", accent=TX_ACCENT)
         tx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.tx_display = HexLineDisplay()
         tx_box.body_layout.addWidget(self.tx_display)
         boxes_row.addWidget(tx_box)
 
-        rx_box = make_card("Data Receiving", icon=QStyle.SP_ArrowDown, accent=RX_ACCENT)
+        rx_box = make_card("Data Receiving", icon="fa5s.arrow-down", accent=RX_ACCENT)
         rx_box.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         self.rx_display = HexLineDisplay()
         rx_box.body_layout.addWidget(self.rx_display)
@@ -39,7 +38,7 @@ class CommunicationPage(BasePage):
         # troubleshooting a real bench-test session where you need to see
         # what happened several messages ago (a timeout, an error, the
         # exact command that preceded a disconnect).
-        log_box = make_card("Activity Log", icon=QStyle.SP_CommandLink)
+        log_box = make_card("Activity Log", icon="fa5s.terminal")
         self.log = TerminalWidget()
         log_box.body_layout.addWidget(self.log)
         layout.addWidget(log_box, 5)

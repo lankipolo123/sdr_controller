@@ -33,8 +33,10 @@ class SplashScreen(QWidget):
         )
         self.setFixedSize(440, 300)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.setObjectName("SplashScreen")
         self.setStyleSheet(
-            f"background-color: {colors.SURFACE}; border: 1px solid {colors.BORDER_SUBTLE};"
+            f"#SplashScreen {{ background-color: {colors.SURFACE}; "
+            f"border: 1px solid {colors.BORDER_SUBTLE}; }}"
         )
 
         layout = QVBoxLayout(self)

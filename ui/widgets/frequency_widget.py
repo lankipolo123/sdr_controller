@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QSpinBox, QComboBox, QPushButton
 
 from protocol import constants as c
-from ..theme_colors import TEXT_DARK
+from ..theme_colors import TEXT_DARK, STATUS_OK, STATUS_OK_DARK, STATUS_ERROR, STATUS_ERROR_DARK
 
 STEP_OPTIONS_MHZ = [1, 10, 50, 100]
 
@@ -22,11 +22,23 @@ class FrequencyWidget(QWidget):
 
         self.minus_btn = QPushButton("-")
         self.minus_btn.setFixedWidth(36)
+        self.minus_btn.setStyleSheet(
+            f"QPushButton {{ background: {STATUS_ERROR}; color: white; border: none; "
+            f"border-radius: 5px; font-weight: 700; }}"
+            f"QPushButton:hover {{ background: {STATUS_ERROR_DARK}; }}"
+            f"QPushButton:pressed {{ background: {STATUS_ERROR_DARK}; }}"
+        )
         self.minus_btn.clicked.connect(self._step_down)
         layout.addWidget(self.minus_btn)
 
         self.plus_btn = QPushButton("+")
         self.plus_btn.setFixedWidth(36)
+        self.plus_btn.setStyleSheet(
+            f"QPushButton {{ background: {STATUS_OK}; color: white; border: none; "
+            f"border-radius: 5px; font-weight: 700; }}"
+            f"QPushButton:hover {{ background: {STATUS_OK_DARK}; }}"
+            f"QPushButton:pressed {{ background: {STATUS_OK_DARK}; }}"
+        )
         self.plus_btn.clicked.connect(self._step_up)
         layout.addWidget(self.plus_btn)
 
