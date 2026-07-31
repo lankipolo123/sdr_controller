@@ -11,3 +11,4 @@ from .hex_line_display import HexLineDisplay
 from .card import make_card
 from .sidebar_header import SidebarHeader
 from .combo_box import ComboBox
+from .emergency_stop_button import EmergencyStopButton
