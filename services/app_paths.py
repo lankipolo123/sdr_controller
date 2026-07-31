@@ -1,14 +1,3 @@
-"""
-Writable-path resolution for config/logs.
-
-In dev mode (running from source), config and logs live next to the repo,
-same as always. Once packaged with PyInstaller (sys.frozen is set), the
-app is installed to Program Files - not writable by a standard user - and
-a onefile build's own directory is a throwaway temp extraction folder
-recreated on every launch anyway. So a frozen build needs a real per-user
-writable location instead: %APPDATA%\\SDR Controller on Windows.
-"""
-
 import os
 import sys
 

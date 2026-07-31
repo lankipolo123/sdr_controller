@@ -5,8 +5,6 @@ from .device_controller import DeviceController
 
 
 class AppController:
-    """Composition root: builds and wires every layer exactly once."""
-
     def __init__(self):
         self.config = ConfigService()
         self.logger = setup_logger(self.config.get("log_folder", "logs"))

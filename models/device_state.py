@@ -1,9 +1,3 @@
-"""
-Holds current known device state. Nothing else in the app keeps its own
-copy of these values — pages read from here and subscribe to `changed`
-to refresh when the Device Controller updates it.
-"""
-
 from dataclasses import dataclass
 from PySide6.QtCore import QObject, Signal
 

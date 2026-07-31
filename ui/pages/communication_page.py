@@ -33,11 +33,6 @@ class CommunicationPage(BasePage):
 
         layout.addLayout(boxes_row)
 
-        # Full scrollable history - the two boxes above only ever show the
-        # latest message, which is fine for a quick glance but useless for
-        # troubleshooting a real bench-test session where you need to see
-        # what happened several messages ago (a timeout, an error, the
-        # exact command that preceded a disconnect).
         log_box = make_card("Activity Log", icon="fa5s.terminal")
         self.log = TerminalWidget()
         log_box.body_layout.addWidget(self.log)

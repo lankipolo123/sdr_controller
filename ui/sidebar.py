@@ -17,13 +17,6 @@ _ICON_SIZE = 20
 
 
 def _build_icon(icon_key: str) -> QIcon:
-    """
-    Same Qt standard-icon set used everywhere else in the app (cards,
-    page headers), tinted blue for the normal (unselected) state and
-    dark for the Selected state — the row's background flips to
-    accent-blue when selected, so the icon needs to flip to dark too, or
-    it just blends into the highlight and disappears.
-    """
     icon = QIcon()
     icon.addPixmap(nav_icon_pixmap(icon_key, _ICON_SIZE, ACCENT_BLUE), QIcon.Normal, QIcon.Off)
     icon.addPixmap(nav_icon_pixmap(icon_key, _ICON_SIZE, SIDEBAR_SELECTED_TEXT), QIcon.Selected, QIcon.Off)
@@ -36,7 +29,7 @@ class Sidebar(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFixedWidth(180)
-        self.setFocusPolicy(Qt.NoFocus)  # stops Qt drawing a focus box around the selected item
+        self.setFocusPolicy(Qt.NoFocus)
         self.setIconSize(QSize(_ICON_SIZE, _ICON_SIZE))
         self.setStyleSheet(
             f"QListWidget {{ background: {NAVY}; color: {TEXT_LIGHT}; border: none; "
@@ -53,13 +46,6 @@ class Sidebar(QListWidget):
         self.currentTextChanged.connect(self.page_selected.emit)
 
     def row_height(self) -> int:
-        """
-        The real, live-computed height of a sidebar row — depends on font
-        metrics and padding, which vary by OS/DPI/font rendering. Query
-        this directly rather than hardcoding a number measured on one
-        machine, or the page header will drift out of alignment with the
-        sidebar on any machine that computes row height differently.
-        """
         if self.count() > 0:
             return self.sizeHintForRow(0)
-        return 50  # fallback only reached if the sidebar has no items yet
+        return 50

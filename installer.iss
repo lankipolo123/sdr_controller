@@ -1,12 +1,3 @@
-; Inno Setup script for SDR Controller.
-; Wraps the PyInstaller onefile build (dist\SDR_Controller.exe, produced by
-; build.spec) into a normal Windows Setup.exe with Start Menu shortcuts and
-; an uninstaller. Built automatically by .github/workflows/build-installer.yml
-; on a Windows runner - see that file for the actual build steps.
-;
-; MyAppVersion is passed in from the CI workflow via /DMyAppVersion=..., so
-; the installer version always matches the git tag it was built from. The
-; fallback here only matters for a manual local run of ISCC.
 #ifndef MyAppVersion
   #define MyAppVersion "0.0.0-dev"
 #endif

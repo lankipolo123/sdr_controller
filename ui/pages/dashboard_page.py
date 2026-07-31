@@ -79,11 +79,6 @@ class DashboardPage(BasePage):
         self._refresh()
 
     def _make_status_card(self, title: str, icon=None):
-        """Card styled as a compact stat tile: a small muted header above
-        one large, bold value — not just a plain box with same-size text
-        throughout. Icon is tinted TEXT_MUTED (not the bold accent blue)
-        so it reads as a light, secondary decoration rather than competing
-        with the value text for attention."""
         box = make_card(title, icon=icon, accent=TEXT_MUTED)
         value_label = QLabel("—")
         value_label.setStyleSheet(

@@ -1,8 +1,3 @@
-"""
-Quick sanity tests for packet_builder / packet_parser.
-Run with: python -m protocol.test_protocol
-"""
-
 from . import constants as c
 from . import packet_builder as pb
 from .packet_parser import FrameParser
@@ -17,7 +12,6 @@ def test_output_switch():
 def test_signal_control():
     frame = pb.build_signal_control(addr=0, mode=c.MODE_WHITE_NOISE,
                                      freq_mhz=2450, bandwidth_mhz=100, power_db=-6)
-    # 2450 MHz = 0x0992
     expected = bytes([0x7E, 0x7E, 0x02, 0x00, 0x05, 0x00, 0x09, 0x92, 0x03, 0x01, 0x0A, 0x0D])
     assert frame == expected, f"{frame.hex()} != {expected.hex()}"
     print("signal_control OK:", pb.to_hex_str(frame))
@@ -26,14 +20,11 @@ def test_signal_control():
 
 def test_status_query():
     frame = pb.build_status_query()
-    # Vendor doc's literal fixed example: 7E 7E FF 00 00 0A 0D (Addr=0x00)
     assert frame == bytes([0x7E, 0x7E, 0xFF, 0x00, 0x00, 0x0A, 0x0D]), frame.hex()
     print("status_query OK (matches vendor's literal fixed example):", pb.to_hex_str(frame))
 
 
 def test_status_query_with_explicit_address():
-    # Real usage (DeviceController) always passes the module's actual
-    # configured address rather than relying on the default.
     frame = pb.build_status_query(addr=7)
     assert frame == bytes([0x7E, 0x7E, 0xFF, 0x07, 0x00, 0x0A, 0x0D]), frame.hex()
     print("status_query_with_explicit_address OK:", pb.to_hex_str(frame))
@@ -41,7 +32,6 @@ def test_status_query_with_explicit_address():
 
 def test_parse_roundtrip():
     parser = FrameParser()
-    # Simulate a status query response arriving in two chunks
     resp = bytes([0x7E, 0x7E, 0xFF, 0x00, 0x06,
                   0x01, 0x00, 0x09, 0x92, 0x03, 0x01,
                   0x0A, 0x0D])

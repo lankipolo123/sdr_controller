@@ -1,10 +1,3 @@
-"""
-Persistent Emergency Stop — pinned to the bottom of the sidebar so it's
-reachable from every page, not just Device Control's Output toggle deep
-inside a card. Deliberately a plain QPushButton (not ToggleSwitch): this
-is a one-shot action, not a state to reflect.
-"""
-
 from PySide6.QtWidgets import QPushButton
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon

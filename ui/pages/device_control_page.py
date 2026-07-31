@@ -34,7 +34,6 @@ class DeviceControlPage(BasePage):
 
         layout = self.content_layout
 
-        # Connection & app settings
         settings_box = make_card("Connection & App Settings", icon="fa5s.cog")
         settings_box_layout = settings_box.body_layout
         form = QFormLayout()
@@ -106,9 +105,6 @@ class DeviceControlPage(BasePage):
 
         layout.addWidget(settings_box)
 
-        # Output controls — a status pill next to the switch instead of a
-        # plain static label, so the card's own color communicates state
-        # at a glance instead of relying on the toggle's position alone.
         output_box = make_card("Output", icon="fa5s.broadcast-tower")
         output_row = QHBoxLayout()
         output_box.body_layout.addLayout(output_row)
@@ -124,7 +120,6 @@ class DeviceControlPage(BasePage):
         output_row.addStretch()
         layout.addWidget(output_box)
 
-        # Signal settings
         signal_box = make_card("Signal Settings", icon="fa5s.satellite-dish")
         signal_layout = signal_box.body_layout
 
@@ -152,7 +147,7 @@ class DeviceControlPage(BasePage):
         for mhz in c.BANDWIDTH_CODES.keys():
             suffix = " (unconfirmed)" if mhz in c.BANDWIDTH_UNCONFIRMED else ""
             self.bw_combo.addItem(f"{mhz} MHz{suffix}", mhz)
-        self.bw_combo.setCurrentIndex(3)  # 100 MHz default
+        self.bw_combo.setCurrentIndex(3)
         bw_row.addWidget(self.bw_combo)
         bw_row.addStretch()
         signal_layout.addLayout(bw_row)

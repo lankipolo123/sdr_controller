@@ -10,12 +10,7 @@ RESPONSE_TIMEOUT_MS = 2000
 
 
 class DeviceController(QObject):
-    """
-    The only place that calls protocol.commands. GUI pages call methods
-    here; they never build packets or touch ConnectionController directly.
-    """
-
-    command_timeout = Signal(str)   # fires if a sent command gets no response in time
+    command_timeout = Signal(str)
 
     def __init__(self, connection_controller, device_state: DeviceState, logger=None):
         super().__init__()
@@ -27,8 +22,6 @@ class DeviceController(QObject):
         self._pending_timer: QTimer | None = None
         self._pending_label = None
         self._pending_state_update: dict | None = None
-
-    # ---- outgoing commands ----
 
     def turn_output_on(self):
         self._send(commands.output_on(self.state.data.address), "Output ON",
@@ -60,7 +53,7 @@ class DeviceController(QObject):
 
         sent = self.conn.send(frame)
         if not sent:
-            return  # ConnectionController already emitted an error; nothing to wait for
+            return
 
         self._cancel_pending_timeout()
         self._pending_label = label
@@ -88,8 +81,6 @@ class DeviceController(QObject):
         self.command_timeout.emit(msg)
         self._pending_timer = None
         self._pending_label = None
-
-    # ---- incoming ----
 
     def _on_connected_changed(self, connected: bool):
         self.state.update(connected=connected)

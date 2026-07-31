@@ -1,8 +1,3 @@
-"""
-Background read loop, separated from SerialManager per the architecture's
-layering. Runs in a QThread so the GUI never blocks waiting on bytes.
-"""
-
 from PySide6.QtCore import QThread, Signal
 
 from protocol.packet_parser import FrameParser
@@ -10,7 +5,7 @@ from .serial_manager import SerialManager
 
 
 class SerialThread(QThread):
-    frame_received = Signal(object)   # ParsedFrame
+    frame_received = Signal(object)
     raw_rx = Signal(bytes)
     error = Signal(str)
 

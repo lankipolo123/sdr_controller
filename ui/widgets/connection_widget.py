@@ -29,8 +29,6 @@ class ConnectionWidget(QWidget):
         layout.addStretch()
 
         self.refresh_ports()
-        # In case the connection was already made before this widget existed
-        # (e.g. auto-connect at startup), reflect the real current state now.
         self._on_connected_changed(self.conn.is_connected())
 
     def refresh_ports(self):
