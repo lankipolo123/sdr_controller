@@ -22,7 +22,8 @@ class SidebarHeader(QWidget):
         self.setObjectName("SidebarHeader")
         self.setStyleSheet(
             f"#SidebarHeader {{ background: {NAVY}; "
-            f"border-bottom: 1px solid {BORDER_SUBTLE_DARK}; }}"
+            f"border-bottom: 1px solid {BORDER_SUBTLE_DARK}; "
+            f"border-right: 1px solid {BORDER_SUBTLE_DARK}; }}"
         )
         self.setFixedHeight(HEIGHT)
 
