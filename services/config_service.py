@@ -1,6 +1,8 @@
 import json
 import os
 
+from .app_paths import user_data_dir, default_log_folder
+
 DEFAULT_CONFIG = {
     "com_port": "",
     "baud_rate": 115200,
@@ -8,10 +10,10 @@ DEFAULT_CONFIG = {
     "data_bits": 8,
     "module_address": 0,
     "auto_connect": False,
-    "log_folder": "logs",
+    "log_folder": default_log_folder(),
 }
 
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "config.json")
+CONFIG_PATH = os.path.join(user_data_dir(), "config", "config.json")
 
 
 class ConfigService:

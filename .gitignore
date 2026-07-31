@@ -7,5 +7,6 @@ env/
 *.egg-info/
 build/
 dist/
+dist_installer/
 logs/*.log
 .DS_Store
