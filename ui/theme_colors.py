@@ -128,6 +128,8 @@ def build_global_qss() -> str:
     QApplication to already exist — call this from app.py after
     QApplication() is constructed."""
     arrow_path = _cached_qta_icon_path("fa5s.chevron-down", ACCENT_BLUE, "dropdown_arrow")
+    spin_up_path = _cached_qta_icon_path("fa5s.chevron-up", ACCENT_BLUE, "spin_up_arrow")
+    spin_down_path = _cached_qta_icon_path("fa5s.chevron-down", ACCENT_BLUE, "spin_down_arrow")
     return f"""
 QChartView {{
     background: #FFFFFF;
@@ -191,6 +193,34 @@ QComboBox::down-arrow {{
     width: 12px;
     height: 12px;
     margin-right: 5px;
+}}
+QSpinBox::up-button, QSpinBox::down-button {{
+    subcontrol-origin: border;
+    width: 18px;
+    background: {NAVY};
+    border-left: 1px solid {BORDER_SUBTLE};
+}}
+QSpinBox::up-button {{
+    subcontrol-position: top right;
+    border-top-right-radius: 4px;
+    border-bottom: 1px solid {BORDER_SUBTLE_DARK};
+}}
+QSpinBox::down-button {{
+    subcontrol-position: bottom right;
+    border-bottom-right-radius: 4px;
+}}
+QSpinBox::up-button:hover, QSpinBox::down-button:hover {{
+    background: {ACCENT_BLUE_DARK};
+}}
+QSpinBox::up-arrow {{
+    image: url({spin_up_path});
+    width: 9px;
+    height: 9px;
+}}
+QSpinBox::down-arrow {{
+    image: url({spin_down_path});
+    width: 9px;
+    height: 9px;
 }}
 QLineEdit:read-only {{
     background: {CONTENT_BG};
