@@ -70,6 +70,17 @@ class ActivityChart(QChartView):
         self.rx_series.append(self._rx_count, len(data))
         self._rescale(len(data))
 
+    def clear(self):
+        self.tx_series.clear()
+        self.rx_series.clear()
+        self._tx_count = 0
+        self._rx_count = 0
+        self._max_bytes = 1
+        self.axis_x.setRange(0, 10)
+        self.axis_x.setTickInterval(1)
+        self.axis_y.setRange(0, 10)
+        self.axis_y.setTickInterval(2)
+
     def _rescale(self, latest_len: int):
         self._max_bytes = max(self._max_bytes, latest_len)
 

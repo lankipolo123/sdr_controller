@@ -38,6 +38,10 @@ class CommunicationPage(BasePage):
         log_box.body_layout.addWidget(self.log)
         layout.addWidget(log_box, 5)
 
+        self.log.cleared.connect(self.chart.clear)
+        self.log.cleared.connect(self.tx_display.clear)
+        self.log.cleared.connect(self.rx_display.clear)
+
         self.app.connection.raw_tx.connect(self._on_tx)
         self.app.connection.raw_rx.connect(self._on_rx)
         self.app.connection.frame_received.connect(lambda f: self.log.log_info(f.describe()))
