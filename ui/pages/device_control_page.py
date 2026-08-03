@@ -253,6 +253,13 @@ class DeviceControlPage(BasePage):
         if not self.address_spin.hasFocus():
             self.address_spin.setValue(self.app.device_state.data.address)
 
+        output_on = self.app.device_state.data.output_on
+        if self.output_toggle.isChecked() != output_on:
+            self.output_toggle.blockSignals(True)
+            self.output_toggle.setChecked(output_on)
+            self.output_toggle.blockSignals(False)
+            self._style_output_pill(output_on)
+
     def _on_connection_changed(self, connected: bool):
         current_port = self.app.config.get("com_port", "")
         if current_port and self.port_combo.currentText() != current_port:
