@@ -2,9 +2,12 @@ from datetime import datetime
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout
 from PySide6.QtGui import QTextCursor
+from PySide6.QtCore import Signal
 
 
 class TerminalWidget(QWidget):
+    cleared = Signal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
         layout = QVBoxLayout(self)
@@ -16,6 +19,7 @@ class TerminalWidget(QWidget):
         btn_row = QHBoxLayout()
         clear_btn = QPushButton("Clear")
         clear_btn.clicked.connect(self.text.clear)
+        clear_btn.clicked.connect(self.cleared.emit)
         btn_row.addStretch()
         btn_row.addWidget(clear_btn)
         layout.addLayout(btn_row)
