@@ -44,13 +44,25 @@ class ConnectionWidget(QWidget):
             self.conn.disconnect()
             return
         port = self.port_combo.currentText()
+        if not port:
+            return
         baud = self.config.get("baud_rate", 115200) if self.config else 115200
         parity = self.config.get("parity", "N") if self.config else "N"
         data_bits = self.config.get("data_bits", 8) if self.config else 8
-        if port:
-            if self.conn.connect(port, baud, parity, data_bits) and self.config:
-                self.config.set("com_port", port)
+
+        # ConnectionController.connect() emits connected_changed(True)
+        # synchronously, *before* it returns - so the new port must already
+        # be in config before calling connect(), or anything listening for
+        # connected_changed (e.g. Device Control's port dropdown sync) reads
+        # the stale value.
+        previous_port = self.config.get("com_port", "") if self.config else ""
+        if self.config:
+            self.config.set("com_port", port)
+        if self.conn.connect(port, baud, parity, data_bits):
+            if self.config:
                 self.config.save()
+        elif self.config:
+            self.config.set("com_port", previous_port)
 
     def _on_connected_changed(self, connected: bool):
         if connected:
