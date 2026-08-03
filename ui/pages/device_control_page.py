@@ -31,6 +31,7 @@ class DeviceControlPage(BasePage):
         super().__init__("Device Control", "device_control", app_controller, parent)
         config = self.app.config
         self.app.device_state.changed.connect(self._on_state_changed)
+        self.app.connection.connected_changed.connect(self._on_connection_changed)
 
         layout = self.content_layout
 
@@ -251,3 +252,10 @@ class DeviceControlPage(BasePage):
     def _on_state_changed(self):
         if not self.address_spin.hasFocus():
             self.address_spin.setValue(self.app.device_state.data.address)
+
+    def _on_connection_changed(self, connected: bool):
+        current_port = self.app.config.get("com_port", "")
+        if current_port and self.port_combo.currentText() != current_port:
+            if self.port_combo.findText(current_port) < 0:
+                self.port_combo.addItem(current_port)
+            self.port_combo.setCurrentText(current_port)
