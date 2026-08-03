@@ -48,7 +48,9 @@ class ConnectionWidget(QWidget):
         parity = self.config.get("parity", "N") if self.config else "N"
         data_bits = self.config.get("data_bits", 8) if self.config else 8
         if port:
-            self.conn.connect(port, baud, parity, data_bits)
+            if self.conn.connect(port, baud, parity, data_bits) and self.config:
+                self.config.set("com_port", port)
+                self.config.save()
 
     def _on_connected_changed(self, connected: bool):
         if connected:
