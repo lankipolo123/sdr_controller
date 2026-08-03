@@ -24,8 +24,16 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
 
+      - name: Obfuscate source with PyArmor
+        shell: pwsh
+        run: |
+          pyarmor gen -O dist_obfuscated -r .
+          Copy-Item -Recurse -Force assets dist_obfuscated/assets
+          Copy-Item -Recurse -Force config dist_obfuscated/config
+
       - name: Build executable with PyInstaller
-        run: pyinstaller build.spec
+        working-directory: dist_obfuscated
+        run: pyinstaller --distpath ../dist --workpath ../build ../build.spec
 
       - name: Determine version
         id: version
