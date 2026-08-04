@@ -1,6 +1,23 @@
+import time
+
 from PySide6.QtCore import QObject, Signal
 
 from serial_io import SerialManager, SerialThread, list_com_ports
+
+# Windows can briefly keep holding a COM port handle for a moment after a
+# prior close() before the OS driver actually releases it - reconnecting
+# right after a disconnect (or right after a previous failed connect
+# attempt) can hit "Access is denied" purely from that timing, not a real
+# problem with the port. One short, scoped retry clears this up instead of
+# leaving the user stuck with a misleading permission error.
+_TRANSIENT_ACCESS_ERROR_MARKERS = (
+    "access is denied", "permissionerror", "errno 13", "winerror 5",
+)
+
+
+def _looks_like_transient_access_error(exc: Exception) -> bool:
+    text = str(exc).lower()
+    return any(marker in text for marker in _TRANSIENT_ACCESS_ERROR_MARKERS)
 
 
 class ConnectionController(QObject):
@@ -23,10 +40,21 @@ class ConnectionController(QObject):
         return list_com_ports()
 
     def connect(self, port_name: str, baud: int = 115200, parity: str = "N", data_bits: int = 8) -> bool:
-        try:
-            self.manager.open(port_name, baud, parity, data_bits)
-        except Exception as e:
-            self.error.emit(f"Failed to open {port_name}: {e}")
+        last_error = None
+        for attempt in range(2):
+            try:
+                self.manager.open(port_name, baud, parity, data_bits)
+                last_error = None
+                break
+            except Exception as e:
+                last_error = e
+                if attempt == 0 and _looks_like_transient_access_error(e):
+                    time.sleep(0.3)
+                    continue
+                break
+
+        if last_error is not None:
+            self.error.emit(f"Failed to open {port_name}: {last_error}")
             return False
         self.thread.start_reading()
         self.connected_changed.emit(True)
