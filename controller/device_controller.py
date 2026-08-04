@@ -106,6 +106,12 @@ class DeviceController(QObject):
 
     def _on_connected_changed(self, connected: bool):
         self.state.update(connected=connected)
+        if connected:
+            # Trust the address the hardware actually reports over whatever
+            # was last saved locally - a module can be reassigned by others
+            # (DIP switches, another instance of this app, etc.) since the
+            # config file was last written.
+            self.query_address()
 
     def _on_frame(self, frame: ParsedFrame):
         pending_update = self._pending_state_update
