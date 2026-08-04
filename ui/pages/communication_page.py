@@ -47,6 +47,7 @@ class CommunicationPage(BasePage):
         self.app.connection.frame_received.connect(lambda f: self.log.log_info(f.describe()))
         self.app.connection.error.connect(self.log.log_error)
         self.app.device.command_timeout.connect(self.log.log_error)
+        self.app.device.command_failed.connect(self.log.log_error)
         self.app.connection.connected_changed.connect(
             lambda c: self.log.log_info("Connected" if c else "Disconnected")
         )
