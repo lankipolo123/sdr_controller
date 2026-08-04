@@ -11,6 +11,7 @@ class DashboardPage(BasePage):
         super().__init__("Dashboard", "dashboard", app_controller, parent)
         self.app.device_state.changed.connect(self._refresh)
         self.app.device.command_timeout.connect(self._on_command_timeout)
+        self.app.device.command_failed.connect(self._on_command_timeout)
         self.app.connection.frame_received.connect(self._clear_warning)
 
         layout = self.content_layout
