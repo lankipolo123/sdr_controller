@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QCheckBox
-from PySide6.QtCore import Qt, QRectF
+from PySide6.QtCore import Qt, QRectF, QPoint
 from PySide6.QtGui import QPainter, QColor
 
 from ..theme_colors import ACCENT_BLUE, NEUTRAL_TRACK
@@ -16,6 +16,14 @@ class ToggleSwitch(QCheckBox):
         self.setFixedSize(WIDTH, HEIGHT)
         self.setStyleSheet("QCheckBox::indicator { width: 0px; height: 0px; }")
         self.setText("")
+
+    def hitButton(self, pos: QPoint) -> bool:
+        # QCheckBox normally only treats its indicator glyph as clickable.
+        # Zeroing that glyph's size (above) to fully custom-paint the switch
+        # also collapsed Qt's internal click hit-region down to a sliver,
+        # so real clicks on the visible switch mostly did nothing. Make the
+        # whole painted area clickable instead.
+        return self.rect().contains(pos)
 
     def paintEvent(self, event):
         painter = QPainter(self)
