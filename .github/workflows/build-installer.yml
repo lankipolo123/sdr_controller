@@ -30,10 +30,27 @@ jobs:
           pyarmor gen -O dist_obfuscated -r .
           Copy-Item -Recurse -Force assets dist_obfuscated/assets
           Copy-Item -Recurse -Force config dist_obfuscated/config
+          # build.spec must live INSIDE dist_obfuscated, not be referenced
+          # from outside it. PyInstaller resolves every relative path in a
+          # .spec file (Analysis(['main.py'], ...)) against SPECPATH - the
+          # spec file's OWN directory - not the shell's working directory.
+          # Running `pyinstaller ../build.spec` from dist_obfuscated/ only
+          # moves the CWD; the spec file itself still lives at the repo
+          # root, so SPECPATH still points there and Analysis(['main.py'])
+          # would silently resolve to the ORIGINAL, unobfuscated main.py
+          # (and, following its imports, the rest of the unobfuscated
+          # tree) - bundling straight past the entire PyArmor step.
+          # Copying build.spec into dist_obfuscated puts SPECPATH exactly
+          # where it needs to be.
+          Copy-Item -Force build.spec dist_obfuscated/build.spec
 
       - name: Build executable with PyInstaller
         working-directory: dist_obfuscated
-        run: pyinstaller --distpath ../dist --workpath ../build ../build.spec
+        # -OO strips docstrings and assert statements from compiled
+        # bytecode before bundling - smaller PYZ archive, and the app's
+        # own code has no assert-based logic to lose (verified: no real
+        # `assert` usage outside test files).
+        run: python -OO -m PyInstaller --distpath ../dist --workpath ../build build.spec
 
       - name: Determine version
         id: version
